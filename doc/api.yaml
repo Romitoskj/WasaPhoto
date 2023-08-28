@@ -1,273 +1,521 @@
-openapi: 3.0.0
-servers:
-  - url: "http://localhost:3000"
+openapi: 3.0.3
+
 info:
-  title: Fantastic Coffee (decaffeinated)
-  description: Fantastic Coffee (decaffeinated), the skeleton project for Web and Software architecture course
-  version: 1.0.0
+  title: WasaPhoto | WASA Project 2022/2023
+  description: |-
+    Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can
+    upload your photos directly from your PC, and they will be visible to everyone following you.
+  version: "1"
+  contact: 
+    name: "Antonio Pietro Romito - mat. 1932500"
+    email: "romito.1932500@studenti.uniroma1.it"
+    url: "https://github.com/Romitoskj"
+
+tags:
+  - name: Stream
+  - name: User Profiles
+  - name: User Relationships
+  - name: Photos
+  - name: Photo Interactions
+  - name: Session
+
+
+
 paths:
-  /status:
-    parameters:
-      - $ref: "#/components/parameters/XAppBuild"
-      - $ref: "#/components/parameters/XAppVersion"
-      - $ref: "#/components/parameters/XAppLanguage"
-      - $ref: "#/components/parameters/XAppPlatform"
-    get:
-      tags: ["General"]
-      operationId: getStatusMessage
-      summary: Get status message for the user about issues / updates
+  /session:
+    post:
+      tags:
+        - Session
+      operationId: doLogin
+      summary: Logs in the user
       description: |-
-        The response contains a status message meant for the user. It might
-        contains information about current technical issues, update messages
-        or general information.
+        If the user does not exists, it will be created,
+        and an identifier is returned.
+        If the user exists, the user identifier is returned.
+      requestBody:
+        description: User details
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/username' }
+              
+        required: true
       responses:
-        "200":
-          description: Status message available
+        '201':
+          description: User log-in action successful
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/StatusInfo"
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
+              schema:        
+                type: object
+                properties:
+                  identifier: { $ref: '#/components/schemas/id' }
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
 
-  /:
-    get:
-      tags: ["Group 1"]
-      operationId: index
-      summary: Get an index
-      description: |-
-        This is an example of an index API description
-      responses:
-        "200":
-          description: Successful
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
-  /context:
+
+  /users/:
     parameters:
-      - $ref: "#/components/parameters/XAppBuild"
-      - $ref: "#/components/parameters/XAppVersion"
-      - $ref: "#/components/parameters/XAppLanguage"
-      - $ref: "#/components/parameters/XAppPlatform"
-    post:
-      tags: ["Group 1"]
-      operationId: getContext
-      summary: Another API example
-      description: |-
-        Example description 2
-      responses:
-        "200":
-          description: Request ok
-          headers:
-            X-Access-Token:
-              description: Access token for authenticated requests
-              schema: { type: string }
-        "500": { $ref: "#/components/responses/InternalServerError" }
-  /authenticated:
-    parameters:
-      - $ref: "#/components/parameters/XAppBuild"
-      - $ref: "#/components/parameters/XAppVersion"
-      - $ref: "#/components/parameters/XAppLanguage"
-      - $ref: "#/components/parameters/XAppPlatform"
+      - name: query
+        in: query
+        required: true
+        description: The searched username.
+        schema: { $ref: '#/components/schemas/name' }
     get:
-      tags: ["Group 2"]
-      operationId: getAuthenticatedExample
-      summary: Get an endpoint with authentication
-      description: |-
-        Get an endpoint with auth
       security:
-        - LegacyAuth: []
-        - AppToken: []
-      responses:
-        "200":
-          description: Logout successful
-        "500": { $ref: "#/components/responses/InternalServerError" }
+        - bearerAuth: [] 
+      tags:
+        - User Profiles
+      operationId: searchUser
+      responses: 
+        
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
 
-  /pictures/{cat}:
+
+  /users/{user}:
     parameters:
-      - $ref: "#/components/parameters/XAppBuild"
-      - $ref: "#/components/parameters/XAppVersion"
-      - $ref: "#/components/parameters/XAppLanguage"
-      - $ref: "#/components/parameters/XAppPlatform"
-      - $ref: "#/components/parameters/cat"
+      - { $ref: '#/components/parameters/user' }
     get:
-      tags: ["Cat pictures"]
-      operationId: getCatFromPicture
-      summary: Example of a parameter in URL
-      description: |-
-        Example of a parameter in URL
       security:
-        - LegacyAuth: []
-      responses:
-        "200":
-          description: Student picture found
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-              example: Picture binary file
-        "404":
-          description: Student picture not found
-        "500": { $ref: "#/components/responses/InternalServerError" }
+        - bearerAuth: [] 
+      tags: 
+        - User Profiles
+      operationId: getUserProfile
+      responses: 
+        
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
 
 
-  /autofeeder/{cat}:
+  /users/{user}/username:
     parameters:
-      - $ref: "#/components/parameters/XAppBuild"
-      - $ref: "#/components/parameters/XAppVersion"
-      - $ref: "#/components/parameters/XAppLanguage"
-      - $ref: "#/components/parameters/XAppPlatform"
-      - $ref: "#/components/parameters/cat"
+      - { $ref: '#/components/parameters/user' }
     put:
-      tags: ["Autofeeder"]
-      operationId: createCatAutofeeder
-      summary: Example of PUT operation
       security:
-        - LegacyAuth: []
-      responses:
-        "200":
-          description: Auto feed enabled
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
-    delete:
-      tags: ["Autofeeder"]
-      operationId: deleteCatAutofeeder
-      summary: Example of DELETE operation
-      security:
-        - LegacyAuth: []
-      responses:
-        "200":
-          description: Auto feed disabled
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
+        - bearerAuth: [] 
+      tags:
+        - User Profiles
+      operationId: setMyUsername
+      responses: 
+        
+        
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
 
-  /session/login:
+
+  /users/{user}/followers/:
     parameters:
-      - $ref: "#/components/parameters/XAppBuild"
-      - $ref: "#/components/parameters/XAppVersion"
-      - $ref: "#/components/parameters/XAppLanguage"
-      - $ref: "#/components/parameters/XAppPlatform"
-    post:
-      tags: ["Session management"]
-      operationId: login
-      summary: Log-in into system
-      description: |-
-        Perform a log-in action using username and password credentials.
-        Returns a token which can be used in authenticated requests.
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                userid:
-                  type: string
-                  pattern: '^[a-zA-Z0-9]+$'
-                  minLength: 3
-                  maxLength: 255
-                password:
-                  type: string
-                  pattern: '^.*?$'
-                  minLength: 8
-                  maxLength: 255
+      - { $ref: '#/components/parameters/user' }
+    get:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - User Relationships
+      operationId: getFollowers
+      responses: 
+        
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+  
+  /users/{user}/followers/{follower}:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+      - { $ref: '#/components/parameters/follower' }
+    put:
+      security:
+        - bearerAuth: [] 
+      tags: 
+        - User Relationships
+      operationId: followUser
+      responses: 
+        
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+    delete:
+      security:
+        - bearerAuth: [] 
+      tags: 
+        - User Relationships
+      operationId: unfollowUser
       responses:
-        "200":
-          description: Login successful
-          headers:
-            X-Access-Token:
-              description: Access token for authenticated requests
-              schema: { type: string }
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "403":
-          description: Login failed
-          headers:
-            X-Message:
-              description: Error message
-              schema: { type: string }
-        "500": { $ref: "#/components/responses/InternalServerError" }
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/following/:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+    get:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - User Relationships
+      operationId: getFollowing
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/banned/{banned_user}:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+      - { $ref: '#/components/parameters/banned_user' }
+    put:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - User Relationships
+      operationId: banUser
+      responses:
+        
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+    delete:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - User Relationships
+      operationId: unbanUser
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/photos/:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+    get:
+      security:
+        - bearerAuth: [] 
+      tags: 
+        - Photos
+      operationId: getUserPhotos
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+    post:
+      security:
+        - bearerAuth: [] 
+      tags: 
+        - Photos
+      operationId: uploadPhoto
+      responses: 
+        
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/photos/{photo}:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+      - { $ref: '#/components/parameters/photo' }
+    get: 
+      security:
+        - bearerAuth: [] 
+      tags: 
+        - Photos
+      operationId: getPhoto
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+    delete:
+      security:
+        - bearerAuth: [] 
+      tags: 
+        - Photos
+      operationId: deletePhoto
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/photos/{photo}/likes/:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+      - { $ref: '#/components/parameters/photo' }
+    get:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Photo Interactions
+      operationId: getLikers
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+    
+
+  /users/{user}/photos/{photo}/likes/{liker}:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+      - { $ref: '#/components/parameters/photo' }
+      - { $ref: '#/components/parameters/liker' }
+    put:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Photo Interactions
+      operationId: likePhoto
+      responses: 
+        
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+    delete:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Photo Interactions
+      operationId: unlikePhoto
+      responses:
+
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/photos/{photo}/comments/:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+      - { $ref: '#/components/parameters/photo' }
+    get:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Photo Interactions
+      operationId: getComments
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+    post:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Photo Interactions
+      operationId: commentPhoto
+      responses: 
+        
+        '400': { $ref: '#/components/responses/400BadRequest' }
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/photos/{photo}/comments/{comment}:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+      - { $ref: '#/components/parameters/photo' }
+      - { $ref: '#/components/parameters/comment' }
+    delete:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Photo Interactions
+      operationId: uncommentPhoto
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
+
+
+  /users/{user}/stream:
+    parameters:
+      - { $ref: '#/components/parameters/user' }
+    get:
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Stream
+      operationId: getMyStream
+      responses: 
+        
+        '401': { $ref: '#/components/responses/401Unauthorized' }
+        '403': { $ref: '#/components/responses/403Forbidden' }
+        '404': { $ref: '#/components/responses/404NotFound' }
+        '500': { $ref: '#/components/responses/500InternalServerError' }
 
 
 components:
-  schemas:
-    StatusInfo:
-      title: Status Info
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-            - info
-            - warning
-            - critical
-            - ""
-        title: { type: string }
-        message: { type: string }
-        url: { type: string }
-
-  responses:
-    Unauthorized:
-      description: The access token is missing or it's expired
-    BadRequest:
-      description: The request was not compliant with the documentation (eg. missing fields, etc)
-    InternalServerError:
-      description: The server encountered an internal error. Further info in server logs
-
   securitySchemes:
-    LegacyAuth:
-      type: apiKey
-      in: header
-      name: X-App-Token
-      description: |-
-        App session token value. This value is sent by the server in the login
-        and session refresh APIs.
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+
+    name:
+      type: string
+      example: Maria
+      pattern: '^.*?$'
+      minLength: 3
+      maxLength: 16
+
+    username:
+      title: Username
+      type: object
+      properties: 
+        name: { $ref: '#/components/schemas/name' }
+        
+    id:
+      type: integer
+      example: 123
+
 
   parameters:
-    XAppVersion:
-      schema:
-        type: string
-        pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
-        minLength: 1
-        maxLength: 10
-      name: X-App-Version
-      in: header
-      required: true
-      description: App human readable version ("semantic version" format)
-      allowEmptyValue: false
-    XAppBuild:
-      schema: { type: integer }
-      name: X-App-Build
-      in: header
-      required: true
-      description: App build number
-      allowEmptyValue: false
-    XAppLanguage:
-      schema:
-        type: string
-        pattern: '^[a-z]{2}([-_][A-Z]{2})?$'
-        minLength: 2
-        maxLength: 5
-      name: X-App-Language
-      in: header
-      required: true
-      description: App language in ISO 639-1 format
-      allowEmptyValue: false
-    XAppPlatform:
-      schema:
-        type: string
-        enum: [ios, android]
-      name: X-App-Platform
-      in: header
-      required: true
-      description: App operating system / platform
-      allowEmptyValue: false
-    cat:
-      schema:
-        type: string
-        pattern: '^[a-zA-Z]+$'
-        minLength: 3
-        maxLength: 10
-      name: cat
+    user:
+      name: user
       in: path
       required: true
-      description: Cat
-      allowEmptyValue: false
+      description: The user identifier.
+      schema: { $ref: '#/components/schemas/id' }
+      
+    follower:
+      name: follower
+      in: path
+      required: true
+      description: The follower identifier.
+      schema: { $ref: '#/components/schemas/id' }
+      
+    banned_user:
+      name: banned_user
+      in: path
+      required: true
+      description: The banned user identifier.
+      schema: { $ref: '#/components/schemas/id' }
+      
+    photo:
+      name: photo
+      in: path
+      required: true
+      description: The photo identifier.
+      schema: { $ref: '#/components/schemas/id' }
+      
+    liker:
+      name: liker
+      in: path
+      required: true
+      description: The identifier of the user that likes the photo.
+      schema: { $ref: '#/components/schemas/id' }
+      
+    comment:
+      name: comment
+      in: path
+      required: true
+      description: The comment identifier.
+      schema: { $ref: '#/components/schemas/id' }
+
+
+  responses:
+    400BadRequest:
+      description: The request is not valid.
+      content: 
+        application/json: 
+          schema: 
+            title: Error
+            type: object
+            description: Error message
+            properties:
+              Error:
+                type: string
+                description: The message
+                example: The request body is not valid.
+    401Unauthorized:
+      description: Authentication ID is missing or invalid.
+      content: 
+        application/json: 
+          schema: 
+            title: Error
+            type: object
+            description: Error message
+            properties:
+              Error:
+                type: string
+                description: The message
+                example: Authentication ID is missing or invalid.
+    403Forbidden:
+      description: Action proibithed when performing an operation without permission.
+      content: 
+        application/json: 
+          schema: 
+            title: Error
+            type: object
+            description: Error message
+            properties:
+              Error:
+                type: string
+                description: The message
+                example: The logged user does not have permissions to access this resource because it belong to someone else.
+    404NotFound:
+      description: Resource not found.
+      content: 
+        application/json: 
+          schema: 
+            title: Error
+            type: object
+            description: Error message
+            properties:
+              Error:
+                type: string
+                description: The message
+                example: Resource not found.
+    500InternalServerError:
+      description: Internal server error.
+      content: 
+        application/json: 
+          schema: 
+            title: Error
+            type: object
+            description: Error message
+            properties:
+              Error:
+                type: string
+                description: The message
+                example: Internal server error.
+              
