@@ -3,13 +3,17 @@ openapi: 3.0.3
 info:
   title: WasaPhoto | WASA Project 2022/2023
   description: |-
-    Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can
-    upload your photos directly from your PC, and they will be visible to everyone following you.
+    Keep in touch with your friends by sharing photos of special moments, thanks
+    to WASAPhoto! You can upload your photos directly from your PC, and they
+    will be visible to everyone following you.
   version: "1"
   contact: 
     name: "Antonio Pietro Romito - mat. 1932500"
     email: "romito.1932500@studenti.uniroma1.it"
     url: "https://github.com/Romitoskj"
+
+servers:
+- url: http://localhost:3000
 
 tags:
   - name: Stream
@@ -33,7 +37,7 @@ paths:
         and an identifier is returned.
         If the user exists, the user identifier is returned.
       requestBody:
-        description: User details
+        description: User details.
         content:
           application/json:
             schema: { $ref: '#/components/schemas/username' }
@@ -44,7 +48,8 @@ paths:
           description: User log-in action successful
           content:
             application/json:
-              schema:        
+              schema:
+                description: User identifier
                 type: object
                 properties:
                   identifier: { $ref: '#/components/schemas/id' }
@@ -65,9 +70,11 @@ paths:
       tags:
         - User Profiles
       operationId: searchUser
-      responses: 
-        
-        
+      summary: Search a user by username
+      description: |-
+        Return a list of users whose username match the given query string. 
+      responses:
+        '200': { $ref: '#/components/responses/200SearchUser' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
 
@@ -81,9 +88,13 @@ paths:
       tags: 
         - User Profiles
       operationId: getUserProfile
+      summary: Get the user profile page
+      description: |-
+        Return the user profile page of the specified user with its information
+        (id, username, number of followers, number of following and number of
+        photos uploaded) and photos in revers chronological order.
       responses: 
-        
-        
+        '200': { $ref: '#/components/responses/200GetUserProfile' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
@@ -98,9 +109,16 @@ paths:
       tags:
         - User Profiles
       operationId: setMyUsername
+      summary: Update the username
+      description: |-
+        Update the username of the given user with the one provided in the
+        request body.
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/username' }
       responses: 
-        
-        
+        '204': { $ref: '#/components/responses/204Update' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -117,9 +135,11 @@ paths:
       tags:
         - User Relationships
       operationId: getFollowers
+      summary: Get the list of followers
+      description: |-
+        Return the list of the users that follows the specified user.
       responses: 
-        
-        
+        '200': { $ref: '#/components/responses/200Followers' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
@@ -166,8 +186,11 @@ paths:
       tags:
         - User Relationships
       operationId: getFollowing
+      summary: Get the list of following
+      description: |-
+        Return the list of the users that the specified user follows.
       responses: 
-        
+        '200': { $ref: '#/components/responses/200Following' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
@@ -399,6 +422,7 @@ components:
 
     username:
       title: Username
+      description: This object represents the username chosen by a user.
       type: object
       properties: 
         name: { $ref: '#/components/schemas/name' }
@@ -406,6 +430,68 @@ components:
     id:
       type: integer
       example: 123
+
+    user:
+      title: User
+      description: This object represents a single user.
+      type: object
+      properties:
+        identifier: { $ref: '#/components/schemas/id' }
+        name: { $ref: '#/components/schemas/name' }
+        
+    users:
+      title: Users
+      description: List of user objects.
+      type: array
+      items: { $ref: '#/components/schemas/user' }
+
+    photo:
+      title: Photo
+      description: This object represents a single photo.
+      type: object
+      properties:
+        identifier:  { $ref: '#/components/schemas/id' }
+        creator: { $ref: '#/components/schemas/name' }
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-08-29T09:11:30.133Z"
+          description: Upload date and time.
+        likes:
+          type: integer
+          example: 100
+          description: Likes count.
+        comments:
+          type: integer
+          example: 20
+          description: Comments count.
+        
+    photos:
+      title: Photos
+      description: List of photos objects in revers chronological order.
+      type: array
+      items: { $ref: '#/components/schemas/photo' }
+
+    profile:
+      title: Profile
+      description: This object represents a profile page of a single user.
+      type: object
+      properties:
+        user: { $ref: '#/components/schemas/user' }
+        photos_n:
+          description: Number of photos uploaded.
+          type: integer
+          example: 15
+        followers_n:
+          description: Number of follower of the user.
+          type: integer
+          example: 1000
+        following_n:
+          description: Number of accounts that the user follows.
+          type: integer
+          example: 1000
+        photos: { $ref: '#/components/schemas/photos' }
+
 
 
   parameters:
@@ -453,6 +539,38 @@ components:
 
 
   responses:
+              
+    200SearchUser:
+      description: List of users.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/users' }
+
+    200GetUserProfile:
+      description: User profile page.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/profile' }
+              
+    200Followers:
+      description: List of followers.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/users' }
+              
+    200Following:
+      description: List of following.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/users' }
+          
+    204Update:
+      description: The resource has been updated.
+          
+    204Delete:
+      description: The resource has been deleted.
+
+
     400BadRequest:
       description: The request is not valid.
       content: 
@@ -462,10 +580,11 @@ components:
             type: object
             description: Error message
             properties:
-              Error:
+              error:
                 type: string
                 description: The message
                 example: The request body is not valid.
+
     401Unauthorized:
       description: Authentication ID is missing or invalid.
       content: 
@@ -475,12 +594,14 @@ components:
             type: object
             description: Error message
             properties:
-              Error:
+              error:
                 type: string
                 description: The message
                 example: Authentication ID is missing or invalid.
+    
     403Forbidden:
-      description: Action proibithed when performing an operation without permission.
+      description: |-
+        Action proibithed when performing an operation without permission.
       content: 
         application/json: 
           schema: 
@@ -488,10 +609,11 @@ components:
             type: object
             description: Error message
             properties:
-              Error:
+              error:
                 type: string
                 description: The message
-                example: The logged user does not have permissions to access this resource because it belong to someone else.
+                example: This resource belongs to someone else.
+    
     404NotFound:
       description: Resource not found.
       content: 
@@ -501,10 +623,12 @@ components:
             type: object
             description: Error message
             properties:
-              Error:
+              error:
                 type: string
                 description: The message
                 example: Resource not found.
+    
+
     500InternalServerError:
       description: Internal server error.
       content: 
@@ -514,8 +638,7 @@ components:
             type: object
             description: Error message
             properties:
-              Error:
+              error:
                 type: string
                 description: The message
                 example: Internal server error.
-              
