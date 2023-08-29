@@ -114,6 +114,7 @@ paths:
         Update the username of the given user with the one provided in the
         request body.
       requestBody:
+        description: The new username.
         content:
           application/json:
             schema: { $ref: '#/components/schemas/username' }
@@ -162,7 +163,6 @@ paths:
         following list of the follower.
       responses: 
         '201': { $ref: '#/components/responses/201Follow' }
-        '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -220,7 +220,6 @@ paths:
       description: Ban an user (banned_user) for another user (user).
       responses:
         '201': { $ref: '#/components/responses/201Ban' }
-        '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -251,8 +250,12 @@ paths:
       tags: 
         - Photos
       operationId: getUserPhotos
+      summary: Get all the photos uploaded by an user
+      description: |-
+        Return a list containing all the photo of the provided user in reverse
+        chronological order.
       responses: 
-        
+        '200': { $ref: '#/components/responses/200Photos' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
@@ -263,8 +266,15 @@ paths:
       tags: 
         - Photos
       operationId: uploadPhoto
+      summary: Upload a photo
+      description: Upload a photo on the profile of the provided user.
+      requestBody:
+        description: The image file to upload.
+        content:
+          image/jpeg:
+            schema: { $ref: '#/components/schemas/image' } 
       responses: 
-        
+        '201': { $ref: '#/components/responses/201Photo' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -282,8 +292,11 @@ paths:
       tags: 
         - Photos
       operationId: getPhoto
+      summary: Get a specific photo of an user
+      description: |-
+        Return the jpeg file of the specified photo of the provided user.
       responses: 
-        
+        '200': { $ref: '#/components/responses/200Photo' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
@@ -294,8 +307,10 @@ paths:
       tags: 
         - Photos
       operationId: deletePhoto
+      summary: Delete a photo
+      description: Delete the specified photo of the provided user.
       responses: 
-        
+        '204': { $ref: '#/components/responses/204Delete' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -332,7 +347,6 @@ paths:
       operationId: likePhoto
       responses: 
         
-        '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -346,7 +360,6 @@ paths:
       operationId: unlikePhoto
       responses:
 
-        '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -483,6 +496,11 @@ components:
           type: integer
           example: 20
           description: Comments count.
+    image:
+      title: Image
+      description: This object represents the image file of a photo.
+      type: string
+      format: binary
         
     photos:
       title: Photos
@@ -540,7 +558,7 @@ components:
       required: true
       description: The photo identifier.
       schema: { $ref: '#/components/schemas/id' }
-      
+            
     liker:
       name: liker
       in: path
@@ -582,8 +600,20 @@ components:
         application/json:
           schema: { $ref: '#/components/schemas/users' }
               
+    200Photos:
+      description: List of photos in reverse chronological order.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/photos' }
+              
+    200Photo:
+      description: A single photo.
+      content:
+        image/jpeg:
+          schema: { $ref: '#/components/schemas/image' }
+              
     201Follow:
-      description: The resource is created.
+      description: The resource has been created.
       content:
         application/json:
           schema:
@@ -595,7 +625,7 @@ components:
               follower: { $ref: '#/components/schemas/other_id' }
               
     201Ban:
-      description: The resource is created.
+      description: The resource has been created.
       content:
         application/json:
           schema:
@@ -605,6 +635,12 @@ components:
             properties:
               user: { $ref: '#/components/schemas/id' }
               banned_user: { $ref: '#/components/schemas/other_id' }
+    
+    201Photo:
+      description: The photo has been uploaded.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/photo' }
           
     204Update:
       description: The resource has been updated.
