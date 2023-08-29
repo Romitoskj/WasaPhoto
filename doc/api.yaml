@@ -70,7 +70,7 @@ paths:
       tags:
         - User Profiles
       operationId: searchUser
-      summary: Search a user by username
+      summary: Search an user by username
       description: |-
         Return a list of users whose username match the given query string. 
       responses:
@@ -155,8 +155,13 @@ paths:
       tags: 
         - User Relationships
       operationId: followUser
+      summary: Follow an user
+      description: |-
+        Make the specified user (follower) follow another user (user). It adds
+        the follower to the follower list of the user and the user to the 
+        following list of the follower.
       responses: 
-        
+        '201': { $ref: '#/components/responses/201Follow' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -169,8 +174,13 @@ paths:
       tags: 
         - User Relationships
       operationId: unfollowUser
+      summary: Unfollow an user
+      description: |-
+        Make the specified user (follower) unfollow another user (user). It
+        removes the follower from the follower list of the user and the user
+        from the  following list of the follower.
       responses:
-        
+        '204': { $ref: '#/components/responses/204Delete' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -206,8 +216,10 @@ paths:
       tags:
         - User Relationships
       operationId: banUser
+      summary: Ban an user
+      description: Ban an user (banned_user) for another user (user).
       responses:
-        
+        '201': { $ref: '#/components/responses/201Ban' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -220,8 +232,10 @@ paths:
       tags:
         - User Relationships
       operationId: unbanUser
+      summary: Unban an user
+      description: Unban an user (banned_user) for another user (user).
       responses: 
-        
+        '204': { $ref: '#/components/responses/204Delete' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -422,7 +436,7 @@ components:
 
     username:
       title: Username
-      description: This object represents the username chosen by a user.
+      description: This object represents the username chosen by an user.
       type: object
       properties: 
         name: { $ref: '#/components/schemas/name' }
@@ -430,6 +444,10 @@ components:
     id:
       type: integer
       example: 123
+
+    other_id: 
+      type: integer
+      example: 456
 
     user:
       title: User
@@ -507,14 +525,14 @@ components:
       in: path
       required: true
       description: The follower identifier.
-      schema: { $ref: '#/components/schemas/id' }
+      schema: { $ref: '#/components/schemas/other_id' }
       
     banned_user:
       name: banned_user
       in: path
       required: true
       description: The banned user identifier.
-      schema: { $ref: '#/components/schemas/id' }
+      schema: { $ref: '#/components/schemas/other_id' }
       
     photo:
       name: photo
@@ -563,6 +581,30 @@ components:
       content:
         application/json:
           schema: { $ref: '#/components/schemas/users' }
+              
+    201Follow:
+      description: The resource is created.
+      content:
+        application/json:
+          schema:
+            title: Follow
+            type: object
+            description: Following relationships.
+            properties:
+              user: { $ref: '#/components/schemas/id' }
+              follower: { $ref: '#/components/schemas/other_id' }
+              
+    201Ban:
+      description: The resource is created.
+      content:
+        application/json:
+          schema:
+            title: Ban
+            type: object
+            description: Ban relationships.
+            properties:
+              user: { $ref: '#/components/schemas/id' }
+              banned_user: { $ref: '#/components/schemas/other_id' }
           
     204Update:
       description: The resource has been updated.
@@ -578,11 +620,11 @@ components:
           schema: 
             title: Error
             type: object
-            description: Error message
+            description: Error message.
             properties:
               error:
                 type: string
-                description: The message
+                description: The message.
                 example: The request body is not valid.
 
     401Unauthorized:
@@ -592,11 +634,11 @@ components:
           schema: 
             title: Error
             type: object
-            description: Error message
+            description: Error message.
             properties:
               error:
                 type: string
-                description: The message
+                description: The message.
                 example: Authentication ID is missing or invalid.
     
     403Forbidden:
@@ -607,11 +649,11 @@ components:
           schema: 
             title: Error
             type: object
-            description: Error message
+            description: Error message.
             properties:
               error:
                 type: string
-                description: The message
+                description: The message.
                 example: This resource belongs to someone else.
     
     404NotFound:
@@ -621,11 +663,11 @@ components:
           schema: 
             title: Error
             type: object
-            description: Error message
+            description: Error message.
             properties:
               error:
                 type: string
-                description: The message
+                description: The message.
                 example: Resource not found.
     
 
@@ -636,9 +678,9 @@ components:
           schema: 
             title: Error
             type: object
-            description: Error message
+            description: Error message.
             properties:
               error:
                 type: string
-                description: The message
+                description: The message.
                 example: Internal server error.
