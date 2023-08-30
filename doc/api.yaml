@@ -51,7 +51,7 @@ paths:
 
   /users/:
     parameters:
-      - name: query
+      - name: search
         in: query
         required: true
         description: The searched username.
