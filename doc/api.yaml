@@ -468,6 +468,7 @@ components:
       pattern: '^.*?$'
       minLength: 3
       maxLength: 16
+      description: This string represents the effective username.
 
     username:
       title: Username
@@ -479,10 +480,12 @@ components:
     id:
       type: integer
       example: 123
+      description: An integer auto-incremental ID.
 
     other_id: 
       type: integer
       example: 456
+      description: An integer auto-incremental ID.
 
     user:
       title: User
@@ -597,6 +600,16 @@ components:
       minItems: 0
       maxItems: 1000
       items: { $ref: '#/components/schemas/comment' }
+
+    error:
+      title: Error
+      type: object
+      description: Error message.
+      properties:
+        message:
+          type: string
+          description: The message.
+          example: Error message.
         
 
 
@@ -752,7 +765,7 @@ components:
       description: The comment as been uploaded.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/comments' }
+          schema: { $ref: '#/components/schemas/comment' }
           
     204Update:
       description: The resource has been updated.
@@ -765,70 +778,35 @@ components:
       description: The request is not valid.
       content: 
         application/json: 
-          schema: 
-            title: Error
-            type: object
-            description: Error message.
-            properties:
-              error:
-                type: string
-                description: The message.
-                example: The request body is not valid.
+          schema: { $ref: '#/components/schemas/error'}
+          example: {"message": "The request body is not valid."}
 
     401Unauthorized:
       description: Authentication ID is missing or invalid.
       content: 
         application/json: 
-          schema: 
-            title: Error
-            type: object
-            description: Error message.
-            properties:
-              error:
-                type: string
-                description: The message.
-                example: Authentication ID is missing or invalid.
+          schema: { $ref: '#/components/schemas/error'}
+          example: {"message": "Authentication ID is missing or invalid."}
     
     403Forbidden:
       description: |-
         Action proibithed when performing an operation without permission.
       content: 
         application/json: 
-          schema: 
-            title: Error
-            type: object
-            description: Error message.
-            properties:
-              error:
-                type: string
-                description: The message.
-                example: This resource belongs to someone else.
+          schema: { $ref: '#/components/schemas/error'}
+          example: {"message": "This resource belongs to someone else."}
     
     404NotFound:
       description: Resource not found.
       content: 
         application/json: 
-          schema: 
-            title: Error
-            type: object
-            description: Error message.
-            properties:
-              error:
-                type: string
-                description: The message.
-                example: Resource not found.
+          schema: { $ref: '#/components/schemas/error'}
+          example: {"message": "Resource not found."}
     
 
     500InternalServerError:
       description: Internal server error.
       content: 
         application/json: 
-          schema: 
-            title: Error
-            type: object
-            description: Error message.
-            properties:
-              error:
-                type: string
-                description: The message.
-                example: Internal server error.
+          schema: { $ref: '#/components/schemas/error'}
+          example: {"message": "Internal server error."}
