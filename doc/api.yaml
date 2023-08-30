@@ -463,6 +463,7 @@ components:
   schemas:
 
     name:
+      title: Name
       type: string
       example: Maria
       pattern: '^.*?$'
@@ -478,11 +479,13 @@ components:
         name: { $ref: '#/components/schemas/name' }
         
     id:
+      title: ID
       type: integer
       example: 123
       description: An integer auto-incremental ID.
 
     other_id: 
+      title: Other ID
       type: integer
       example: 456
       description: An integer auto-incremental ID.
