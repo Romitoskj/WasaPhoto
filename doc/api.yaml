@@ -44,15 +44,7 @@ paths:
               
         required: true
       responses:
-        '201':
-          description: User log-in action successful
-          content:
-            application/json:
-              schema:
-                description: User identifier
-                type: object
-                properties:
-                  identifier: { $ref: '#/components/schemas/id' }
+        '201': { $ref: '#/components/responses/201Session' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
 
@@ -308,7 +300,9 @@ paths:
         - Photos
       operationId: deletePhoto
       summary: Delete a photo
-      description: Delete the specified photo of the provided user.
+      description: |-
+        Delete the specified photo of the provided user. Removal of a photo also
+        removes likes and comments.
       responses: 
         '204': { $ref: '#/components/responses/204Delete' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
@@ -327,8 +321,11 @@ paths:
       tags:
         - Photo Interactions
       operationId: getLikers
+      summary: Get the list of users that like a specific photo
+      description: |-
+        Returns the list of users that like the specified photo.
       responses: 
-        
+        '200': { $ref: '#/components/responses/200Likes' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
@@ -345,8 +342,12 @@ paths:
       tags:
         - Photo Interactions
       operationId: likePhoto
+      summary: Like a photo
+      description: |-
+        Make the specified user (liker) likes a specific photo. It adds
+        the liker to the likes list of the photo.
       responses: 
-        
+        '201': { $ref: '#/components/responses/201Like' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -358,8 +359,12 @@ paths:
       tags:
         - Photo Interactions
       operationId: unlikePhoto
+      summary: Unlike a photo
+      description: |-
+        Removes the like of the provided user (liker) from a specific photo.
+        It removes the liker from the likes list of the photo.
       responses:
-
+        '204': { $ref: '#/components/responses/204Delete' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -376,8 +381,10 @@ paths:
       tags:
         - Photo Interactions
       operationId: getComments
+      summary: Get the list of comments of a specific photo
+      description: Return the list of comments of the specified photo. 
       responses: 
-        
+        '200': { $ref: '#/components/responses/200Comments' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
@@ -388,8 +395,16 @@ paths:
       tags:
         - Photo Interactions
       operationId: commentPhoto
+      summary: Create a comment on a specific photo
+      description: |-
+        Create a comment on the specified photo with the logged user as author.
+      requestBody:
+        description: The comment text.
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/comment_content' }
       responses: 
-        
+        '201': { $ref: '#/components/responses/201Comment' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -407,8 +422,11 @@ paths:
       tags:
         - Photo Interactions
       operationId: uncommentPhoto
+      summary: Delete a comment
+      description: |-
+        Delete a comment from a photo.
       responses: 
-        
+        '204': { $ref: '#/components/responses/204Delete'}
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -424,8 +442,12 @@ paths:
       tags:
         - Stream
       operationId: getMyStream
+      summary: Get the photo stream
+      description: |-
+        Return a list of photos in revers chronological order based on the
+        accounts the provided user follows.
       responses: 
-        
+        '200': { $ref: '#/components/responses/200Photos' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -474,6 +496,8 @@ components:
       title: Users
       description: List of user objects.
       type: array
+      minItems: 0
+      maxItems: 1000
       items: { $ref: '#/components/schemas/user' }
 
     photo:
@@ -481,8 +505,8 @@ components:
       description: This object represents a single photo.
       type: object
       properties:
-        identifier:  { $ref: '#/components/schemas/id' }
-        creator: { $ref: '#/components/schemas/name' }
+        identifier: { $ref: '#/components/schemas/id' }
+        author: { $ref: '#/components/schemas/name' }
         created_at:
           type: string
           format: date-time
@@ -501,11 +525,15 @@ components:
       description: This object represents the image file of a photo.
       type: string
       format: binary
+      minLength: 1
+      maxLength: 100000000000
         
     photos:
       title: Photos
       description: List of photos objects in revers chronological order.
       type: array
+      minItems: 0
+      maxItems: 1000
       items: { $ref: '#/components/schemas/photo' }
 
     profile:
@@ -527,6 +555,49 @@ components:
           type: integer
           example: 1000
         photos: { $ref: '#/components/schemas/photos' }
+
+    
+    comment_content:
+      title: Comment content
+      description: The text of a comment.
+      type: object
+      properties:
+        content:
+          type: string
+          pattern: '.*'
+          minLength: 1
+          maxLength: 1000
+          example: "Nice picture!"
+          description: The content of the comment
+
+    comment:
+      title: Comment
+      description: This object represents a single comment on a photo.
+      type: object
+      properties:
+        identifier: { $ref: '#/components/schemas/id' }
+        author: { $ref: '#/components/schemas/name' }
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-08-29T09:11:30.133Z"
+          description: Upload date and time.
+        content:
+          type: string
+          pattern: '.*'
+          minLength: 1
+          maxLength: 1000
+          example: "Nice picture!"
+          description: The content of the comment
+        
+    comments:
+      title: Comments
+      description: List of comment objects.
+      type: array
+      minItems: 0
+      maxItems: 1000
+      items: { $ref: '#/components/schemas/comment' }
+        
 
 
 
@@ -612,6 +683,29 @@ components:
         image/jpeg:
           schema: { $ref: '#/components/schemas/image' }
               
+    200Likes:
+      description: A list of users.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/users' }
+              
+    200Comments:
+      description: A list of comments.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/comments' }
+
+    201Session:
+      description: User log-in action successful
+      content:
+        application/json:
+          schema: 
+            title: UserID
+            description: User identifier
+            type: object
+            properties:
+              identifier: { $ref: '#/components/schemas/id' }
+              
     201Follow:
       description: The resource has been created.
       content:
@@ -641,6 +735,24 @@ components:
       content:
         application/json:
           schema: { $ref: '#/components/schemas/photo' }
+
+    201Like:
+      description: The resource has been created.
+      content:
+        application/json:
+          schema:
+            title: Like
+            type: object
+            description: Like to a photo.
+            properties:
+              liker: { $ref: '#/components/schemas/id' }
+              photo: { $ref: '#/components/schemas/id' }
+              
+    201Comment:
+      description: The comment as been uploaded.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/comments' }
           
     204Update:
       description: The resource has been updated.
