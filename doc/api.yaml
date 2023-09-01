@@ -518,11 +518,11 @@ components:
           format: date-time
           example: "2023-08-29T09:11:30.133Z"
           description: Upload date and time.
-        likes:
+        likes_n:
           type: integer
           example: 100
           description: Likes count.
-        comments:
+        comments_n:
           type: integer
           example: 20
           description: Comments count.
