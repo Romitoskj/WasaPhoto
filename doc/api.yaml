@@ -100,7 +100,7 @@ paths:
         - bearerAuth: [] 
       tags:
         - User Profiles
-      operationId: setMyUsername
+      operationId: setMyUserName
       summary: Update the username
       description: |-
         Update the username of the given user with the one provided in the
