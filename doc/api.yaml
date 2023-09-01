@@ -547,7 +547,7 @@ components:
       description: This object represents a profile page of a single user.
       type: object
       properties:
-        user: { $ref: '#/components/schemas/user' }
+        name: { $ref: '#/components/schemas/name' }
         photos_n:
           description: Number of photos uploaded.
           type: integer
