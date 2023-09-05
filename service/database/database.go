@@ -57,9 +57,61 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
 	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
+	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='user';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
+		sqlStmt := `
+			CREATE TABLE "user" (
+				"id"	INTEGER NOT NULL,
+				"username"	TEXT NOT NULL UNIQUE,
+				PRIMARY KEY("id" AUTOINCREMENT)
+			);
+
+			CREATE TABLE "follow" (
+				"follower"	INTEGER NOT NULL,
+				"followed"	INTEGER NOT NULL,
+				FOREIGN KEY("followed") REFERENCES "user"("id") ON DELETE CASCADE,
+				FOREIGN KEY("follower") REFERENCES "user"("id") ON DELETE CASCADE,
+				PRIMARY KEY("follower","followed")
+			);
+
+			CREATE TABLE "ban" (
+				"banner"	INTEGER NOT NULL,
+				"banned"	INTEGER NOT NULL,
+				FOREIGN KEY("banner") REFERENCES "user"("id") ON DELETE CASCADE,
+				FOREIGN KEY("banned") REFERENCES "user"("id") ON DELETE CASCADE,
+				PRIMARY KEY("banner","banned")
+			);
+
+			CREATE TABLE "photo" (
+				"id"	INTEGER NOT NULL,
+				"created_at"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				"image"	BLOB NOT NULL,
+				"author"	INTEGER NOT NULL,
+				PRIMARY KEY("id" AUTOINCREMENT),
+				FOREIGN KEY("author") REFERENCES "user"("id") ON DELETE CASCADE
+			);
+
+			CREATE TABLE "like" (
+				"liker"	INTEGER NOT NULL,
+				"photo"	INTEGER NOT NULL,
+				FOREIGN KEY("liker") REFERENCES "user"("id") ON DELETE CASCADE,
+				FOREIGN KEY("photo") REFERENCES "photo"("id") ON DELETE CASCADE,
+				PRIMARY KEY("liker","photo")
+			);
+
+			CREATE TABLE "comment" (
+				"id"	INTEGER NOT NULL,
+				"created_at"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				"content"	TEXT NOT NULL,
+				"author"	INTEGER NOT NULL,
+				"photo"	INTEGER NOT NULL,
+				FOREIGN KEY("author") REFERENCES "user"("id") ON DELETE CASCADE,
+				FOREIGN KEY("photo") REFERENCES "photo"("id") ON DELETE CASCADE,
+				PRIMARY KEY("id" AUTOINCREMENT)
+			);
+
+			PRAGMA foreign_keys = ON;
+		`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
