@@ -31,6 +31,7 @@ Then you can initialize the AppDatabase and pass it to the api package.
 package database
 
 import (
+	// "wasaphoto/service/types"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -38,8 +39,10 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	GetName() (string, error)
-	SetName(name string) error
+
+	// session
+	Login(username string) (int64, error)
+	GetId(username string) (int64, error)
 
 	Ping() error
 }
