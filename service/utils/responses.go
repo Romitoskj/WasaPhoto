@@ -18,7 +18,7 @@ func InternalServerError(w http.ResponseWriter, err error) {
 	return
 }
 
-func BadRequest(w http.ResponseWriter, msg string, err error) {
+func BadRequest(w http.ResponseWriter, msg string) {
 	w.WriteHeader(http.StatusBadRequest)
 	if msg == "" {
 		msg = "The request body is not valid."
@@ -26,7 +26,19 @@ func BadRequest(w http.ResponseWriter, msg string, err error) {
 	res := types.Error{
 		Message: msg,
 	}
-	err = json.NewEncoder(w).Encode(res)
+	err := json.NewEncoder(w).Encode(res)
+	if err != nil {
+		InternalServerError(w, err)
+		return
+	}
+}
+
+func NotFound(w http.ResponseWriter, rsc string) {
+	w.WriteHeader(http.StatusNotFound)
+	res := types.Error{
+		Message: rsc + " not found.",
+	}
+	err := json.NewEncoder(w).Encode(res)
 	if err != nil {
 		InternalServerError(w, err)
 		return

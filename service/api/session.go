@@ -3,10 +3,11 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"wasaphoto/service/types"
-	"wasaphoto/service/utils"
 
 	"github.com/julienschmidt/httprouter"
+
+	"wasaphoto/service/types"
+	"wasaphoto/service/utils"
 )
 
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -18,12 +19,12 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&username)
 	if err != nil {
-		utils.BadRequest(w, "", err)
+		utils.BadRequest(w, "")
 		return
 	}
 
 	if len(username.Username) < 3 || len(username.Username) > 16 {
-		utils.BadRequest(w, "The username must be longer than 3 and shorter than 16 characters.", err)
+		utils.BadRequest(w, "The username must be longer than 3 and shorter than 16 characters.")
 		return
 	}
 

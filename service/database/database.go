@@ -44,6 +44,11 @@ type AppDatabase interface {
 	Login(username string) (int64, error)
 	GetId(username string) (int64, error)
 
+	// profile interactions
+	ChangeUsername(id int64, newName string) error
+	UsernameExists(username string) (bool, error)
+	UserExists(user int64) (bool, error)
+
 	Ping() error
 }
 
