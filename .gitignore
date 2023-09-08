@@ -14,3 +14,5 @@ docker-compose.log
 doc/validation.txt
 service/database/wasa.db
 webapi
+.editorconfig
+.vscode

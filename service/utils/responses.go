@@ -43,3 +43,14 @@ func NotFound(w http.ResponseWriter, rsc string) {
 		return
 	}
 }
+
+func Unauthorized(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusUnauthorized)
+	res := types.Error{
+		Message: "Authentication ID is missing or invalid.",
+	}
+	err := json.NewEncoder(w).Encode(res)
+	if err != nil {
+		return
+	}
+}

@@ -2,9 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -15,12 +13,7 @@ import (
 func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// extract user id from path parameters
-	uid_s := ps.ByName("user")
-	if len(uid_s) == 0 {
-		utils.InternalServerError(w, errors.New("Path paramether 'user' not found"))
-		return
-	}
-	uid, err := strconv.ParseInt(uid_s, 10, 64)
+	uid, err := utils.ExtractUserPath(ps)
 	if err != nil {
 		utils.InternalServerError(w, err)
 		return
