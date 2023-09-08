@@ -16,3 +16,5 @@ service/database/wasa.db
 webapi
 .editorconfig
 .vscode
+service/api/get-context-reply.go
+service/api/get-hello-world.go
