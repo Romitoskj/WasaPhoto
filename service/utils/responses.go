@@ -15,7 +15,6 @@ func InternalServerError(w http.ResponseWriter, err error) {
 	if err != nil {
 		return
 	}
-	return
 }
 
 func BadRequest(w http.ResponseWriter, msg string) {
