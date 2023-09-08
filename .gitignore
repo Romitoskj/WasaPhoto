@@ -13,3 +13,4 @@ docker-compose.log
 /doc/markdown
 doc/validation.txt
 service/database/wasa.db
+webapi
