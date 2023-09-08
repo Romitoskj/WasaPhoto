@@ -31,6 +31,10 @@ func (rt *_router) authWrap(fn httpRouterHandler) func(http.ResponseWriter, *htt
 		// if the user id does not exist return 401
 		var exists bool
 		exists, err = rt.db.UserExists(uid)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 		if !exists {
 			utils.Unauthorized(w)
 			return
