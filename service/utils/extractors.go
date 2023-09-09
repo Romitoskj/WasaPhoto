@@ -1,10 +1,12 @@
 package utils
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
 	"strings"
+	"wasaphoto/service/types"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -48,4 +50,15 @@ func ExtractUserAuth(r *http.Request) (int64, error) {
 		return 0, err
 	}
 	return uid, nil
+}
+
+func ExtractUsernameBody(r *http.Request) (string, error) {
+	var username types.Username
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&username)
+	if err != nil {
+		return "", errors.New("")
+	}
+	return username.Username, nil
 }

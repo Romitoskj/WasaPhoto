@@ -1,16 +1,32 @@
 package api
 
 import (
-	"encoding/json"
+	"github.com/julienschmidt/httprouter"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
-
-	"wasaphoto/service/types"
 	"wasaphoto/service/utils"
 )
 
-func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// handler function for GET on /users/
+func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
+	// TODO extract query
+
+	// TODO check if query is empty -> send bad request
+
+	// TODO get users from db
+
+	// TODO encode list in json format
+
+	// TODO send response
+}
+
+// handler function for GET on /users/:user
+func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
+	// TODO
+}
+
+// handler function for PUT on /users/:user/username
+func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
 
 	// extract user id from path parameters
 	uid, err := utils.ExtractUserPath(ps)
@@ -19,51 +35,24 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	// check if user exists
-	var exists bool
-	exists, err = rt.db.UserExists(uid)
-	if err != nil {
-		utils.InternalServerError(w, err)
-		return
-	}
-	if !exists {
-		utils.NotFound(w, "User")
-		return
-	}
-
 	// extract new username from body
-	var username types.Username
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&username)
+	username, err := utils.ExtractUsernameBody(r)
 	if err != nil {
 		utils.BadRequest(w, "")
 		return
 	}
 
-	if len(username.Username) < 3 || len(username.Username) > 16 {
-		utils.BadRequest(w, "The username must be longer than 3 and shorter than 16 characters.")
-		return
-	}
+	// check if user has permissions and the username is valid
+	if rt.userWithoutPermissions(w, uid, auth) && rt.usernameNotValid(w, username) {
 
-	// check if the username already exists
-	exists, err = rt.db.UsernameExists(username.Username)
-	if err != nil {
-		utils.InternalServerError(w, err)
-		return
-	}
-	if exists {
-		utils.BadRequest(w, "The username already exists.")
-		return
-	}
+		// update username in db
+		err = rt.db.ChangeUsername(uid, username)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 
-	// update username in db
-	err = rt.db.ChangeUsername(uid, username.Username)
-	if err != nil {
-		utils.InternalServerError(w, err)
-		return
+		// write response
+		w.WriteHeader(http.StatusNoContent)
 	}
-
-	// write response
-	w.WriteHeader(http.StatusNoContent)
 }

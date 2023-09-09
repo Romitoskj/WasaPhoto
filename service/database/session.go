@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-// return the user id given the username
+// GetId return the user id given the username
 func (db *appdbimpl) GetId(username string) (int64, error) {
 	var id int64
 	err := db.c.QueryRow("SELECT id FROM user WHERE username=?", username).Scan(&id)
@@ -29,7 +29,7 @@ func (db *appdbimpl) createUser(username string) (int64, error) {
 	return id, err
 }
 
-// return the user id given the username and create the user if not exists
+// Login return the user id given the username and create the user if not exists
 func (db *appdbimpl) Login(username string) (int64, error) {
 
 	id, err := db.GetId(username)

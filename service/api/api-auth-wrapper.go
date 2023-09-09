@@ -8,7 +8,7 @@ import (
 
 // httpRouterHandler is the signature for functions that accepts a reqcontext.RequestContext in addition to those
 // required by the httprouter package.
-type httpRouterHandler func(http.ResponseWriter, *http.Request, httprouter.Params)
+type httpRouterHandler func(http.ResponseWriter, *http.Request, httprouter.Params, int64)
 
 // wrap parses the request and adds a reqcontext.RequestContext instance related to the request.
 func (rt *_router) authWrap(fn httpRouterHandler) func(http.ResponseWriter, *http.Request, httprouter.Params) {
@@ -41,6 +41,6 @@ func (rt *_router) authWrap(fn httpRouterHandler) func(http.ResponseWriter, *htt
 		}
 
 		// Call the next handler in chain (usually, the handler function for the path)
-		fn(w, r, ps)
+		fn(w, r, ps, uid)
 	}
 }

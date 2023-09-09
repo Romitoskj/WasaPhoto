@@ -10,9 +10,10 @@ import (
 	"wasaphoto/service/utils"
 )
 
+// handler function for POST on /session
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("content-type", "application/json")
-
+	// TODO refactor
 	// get the username from body
 	var username types.Username
 	decoder := json.NewDecoder(r.Body)

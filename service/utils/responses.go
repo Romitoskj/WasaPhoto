@@ -54,3 +54,14 @@ func Unauthorized(w http.ResponseWriter) {
 		return
 	}
 }
+
+func Forbidden(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusForbidden)
+	res := types.Error{
+		Message: "This resource belongs to someone else.",
+	}
+	err := json.NewEncoder(w).Encode(res)
+	if err != nil {
+		return
+	}
+}
