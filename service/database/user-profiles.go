@@ -38,9 +38,19 @@ func (db *appdbimpl) UserExists(id int64) (bool, error) {
 func (db *appdbimpl) Search(search string, id int64) ([]types.User, error) {
 	var users []types.User
 
-	// Get all the users that starts with the search string
-	rows, err := db.c.Query("SELECT id, username FROM user WHERE username LIKE ?", search+"%")
-	// TODO remember to exclude user that banned authenticated user
+	// Get all the users that starts with the search string that have not banned the authenticated user
+	rows, err := db.c.Query(
+		`SELECT id, username
+				FROM user
+				WHERE username LIKE ?
+				AND id NOT IN (
+				    SELECT banner
+				    FROM ban
+				    WHERE banned = ?
+				)`,
+		search+"%",
+		id,
+	)
 	if err != nil {
 		return users, err
 	}
