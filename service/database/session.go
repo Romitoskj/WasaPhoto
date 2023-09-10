@@ -34,8 +34,8 @@ func (db *appdbimpl) Login(username string) (int64, error) {
 
 	id, err := db.GetId(username)
 
+	// if there isn't a user with that username
 	if errors.Is(err, sql.ErrNoRows) {
-		// if there isn't a user with that username
 		id, err = db.createUser(username)
 		if err != nil {
 			return 0, err

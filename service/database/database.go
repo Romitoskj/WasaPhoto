@@ -35,6 +35,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"wasaphoto/service/types"
 )
 
 // AppDatabase is the high level interface for the DB
@@ -48,6 +49,7 @@ type AppDatabase interface {
 	ChangeUsername(id int64, newName string) error
 	UsernameExists(username string) (bool, error)
 	UserExists(user int64) (bool, error)
+	Search(search string, id int64) ([]types.User, error)
 
 	Ping() error
 }

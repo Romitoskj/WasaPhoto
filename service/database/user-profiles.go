@@ -35,7 +35,30 @@ func (db *appdbimpl) UserExists(id int64) (bool, error) {
 }
 
 // Search return a list of user that match the search string
-func (db *appdbimpl) Search(search string, id int64) (*[]types.User, error) {
+func (db *appdbimpl) Search(search string, id int64) ([]types.User, error) {
+	var users []types.User
+
+	// Get all the users that starts with the search string
+	rows, err := db.c.Query("SELECT id, username FROM user WHERE username LIKE ?", search+"%")
 	// TODO remember to exclude user that banned authenticated user
-	return nil, nil
+	if err != nil {
+		return users, err
+	}
+
+	// append each query row to the users list
+	for rows.Next() {
+		var user types.User
+		err = rows.Scan(&user.Id, &user.Name)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	// check if the iteration ended prematurely
+	if rows.Err() != nil {
+		return users, rows.Err()
+	}
+
+	return users, nil
 }

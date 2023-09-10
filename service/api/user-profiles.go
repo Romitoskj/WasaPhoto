@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 
@@ -9,15 +10,28 @@ import (
 
 // handler function for GET on /users/
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
-	// TODO extract query
+	// extract query
+	query := r.URL.Query().Get("search")
+	if query == "" {
+		utils.BadRequest(w, "Missing query parameter")
+		return
+	}
 
-	// TODO check if query is empty -> send bad request
+	// et users from db
+	users, err := rt.db.Search(query, auth)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 
-	// TODO get users from db
-
-	// TODO encode list in json format
-
-	// TODO send response
+	// send users list in the response body
+	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(users)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 }
 
 // handler function for GET on /users/:user
