@@ -42,8 +42,10 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	// check if user has permissions and the username is valid
-	if rt.userWithoutPermissions(w, uid, auth) && rt.usernameNotValid(w, username) {
+	// check if user has permissions and the username is valid and available
+	if rt.userHasPermissions(w, uid, auth) &&
+		rt.usernameIsValid(w, username) &&
+		rt.usernameIsAvailable(w, username) {
 
 		// update username in db
 		err = rt.db.ChangeUsername(uid, username)
