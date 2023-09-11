@@ -17,14 +17,14 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	// et users from db
+	// get users from db
 	users, err := rt.db.Search(query, auth)
 	if err != nil {
 		utils.InternalServerError(w, err)
 		return
 	}
 
-	// send users list in the response body
+	// send users list in the body of 200 OK response
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(users)
@@ -57,7 +57,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// check if user has permissions and the username is valid and available
-	if rt.userHasPermissions(w, uid, auth) &&
+	if rt.userExistsAndHasPermissions(w, uid, auth, "User") &&
 		rt.usernameIsValid(w, username) &&
 		rt.usernameIsAvailable(w, username) {
 
@@ -68,7 +68,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 			return
 		}
 
-		// write response
+		// send 204 NO CONTENT response
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

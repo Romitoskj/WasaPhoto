@@ -5,27 +5,36 @@ import (
 	"wasaphoto/service/utils"
 )
 
-// Returns true if the user has permissions to perform action on a  specific user profile
-func (rt *_router) userHasPermissions(w http.ResponseWriter, uid int64, auth int64) bool {
-
-	// check if user exists
+func (rt *_router) userExists(w http.ResponseWriter, uid int64, resourceName string) bool {
 	exists, err := rt.db.UserExists(uid)
 	if err != nil {
 		utils.InternalServerError(w, err)
 		return false
 	}
 	if !exists {
-		utils.NotFound(w, "User")
+		utils.NotFound(w, resourceName)
 		return false
 	}
+	return true
+}
 
-	// check if user has permissions
+// Return true if the user has permissions to perform action on a specific user profile or send 403 FORBIDDEN and return
+// false
+func (rt *_router) userHasPermissions(w http.ResponseWriter, uid int64, auth int64) bool {
 	if uid != auth {
 		utils.Forbidden(w)
 		return false
 	}
-
 	return true
+}
+
+// Returns true if the user exists and has permissions to perform action on a specific user profile, otherwise return
+// false and send the appropriate response
+func (rt *_router) userExistsAndHasPermissions(w http.ResponseWriter, uid int64, auth int64, resourceName string) bool {
+	if rt.userExists(w, uid, resourceName) && rt.userHasPermissions(w, uid, auth) {
+		return true
+	}
+	return false
 }
 
 // Returns true if username is valid
@@ -49,6 +58,15 @@ func (rt *_router) usernameIsAvailable(w http.ResponseWriter, username string) b
 	}
 	if exists {
 		utils.BadRequest(w, "The username already exists.")
+		return false
+	}
+	return true
+}
+
+// Returns true if the users are not the same, otherwise returns false and send 400 BAD REQUEST response
+func (rt *_router) notSameUser(w http.ResponseWriter, uid int64, uid2 int64) bool {
+	if uid == uid2 {
+		utils.BadRequest(w, "Impossible to follow/ban yourself.")
 		return false
 	}
 	return true

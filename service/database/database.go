@@ -51,6 +51,10 @@ type AppDatabase interface {
 	UserExists(user int64) (bool, error)
 	Search(search string, id int64) ([]types.User, error)
 
+	// user relationships
+	FollowUser(user int64, follower int64) error
+	UnfollowUser(user int64, follower int64) error
+
 	Ping() error
 }
 

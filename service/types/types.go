@@ -13,6 +13,11 @@ type User struct {
 	Name string `json:"name"`
 }
 
+type Follow struct {
+	User     int64 `json:"user"`
+	Follower int64 `json:"follower"`
+}
+
 type Error struct {
 	Message string `json:"message"`
 }

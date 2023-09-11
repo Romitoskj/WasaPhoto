@@ -11,16 +11,20 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func ExtractUserPath(ps httprouter.Params) (int64, error) {
-	uidStr := ps.ByName("user")
-	if len(uidStr) == 0 {
+func extractFromPath(ps httprouter.Params, param string) (int64, error) {
+	idStr := ps.ByName(param)
+	if len(idStr) == 0 {
 		return 0, errors.New("path param 'user' not found")
 	}
-	uid, err := strconv.ParseInt(uidStr, 10, 64)
+	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		return 0, err
 	}
-	return uid, nil
+	return id, nil
+}
+
+func ExtractUserPath(ps httprouter.Params) (int64, error) {
+	return extractFromPath(ps, "user")
 }
 
 func ExtractUserAuth(r *http.Request) (int64, error) {
@@ -47,4 +51,8 @@ func ExtractUsernameBody(r *http.Request) (string, error) {
 		return "", errors.New("")
 	}
 	return username.Username, nil
+}
+
+func ExtractFollowerPath(ps httprouter.Params) (int64, error) {
+	return extractFromPath(ps, "follower")
 }
