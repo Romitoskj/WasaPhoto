@@ -56,3 +56,7 @@ func ExtractUsernameBody(r *http.Request) (string, error) {
 func ExtractFollowerPath(ps httprouter.Params) (int64, error) {
 	return extractFromPath(ps, "follower")
 }
+
+func ExtractBannedUserPath(ps httprouter.Params) (int64, error) {
+	return extractFromPath(ps, "banned_user")
+}

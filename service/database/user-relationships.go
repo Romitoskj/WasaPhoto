@@ -93,3 +93,15 @@ func (db *appdbimpl) GetFollowing(id int64, auth int64) ([]types.User, error) {
 
 	return users, nil
 }
+
+// BanUser adds a follow relationship between two specified users
+func (db *appdbimpl) BanUser(user int64, bannedUser int64) error {
+	_, err := db.c.Exec(`INSERT OR IGNORE INTO ban (banner, banned) VALUES (?, ?)`, user, bannedUser)
+	return err
+}
+
+// UnbanUser removes a follow relationship between two specified users
+func (db *appdbimpl) UnbanUser(user int64, bannedUser int64) error {
+	_, err := db.c.Exec(`DELETE FROM ban WHERE banner=? AND banned=?`, user, bannedUser)
+	return err
+}

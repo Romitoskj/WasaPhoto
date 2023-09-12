@@ -143,36 +143,74 @@ func (rt *_router) getFollowing(w http.ResponseWriter, r *http.Request, ps httpr
 
 // handler for PUT on /users/:user/banned/:banned_user
 func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
-	// TODO extract user from path
+	// extract user from path
+	user, err := utils.ExtractUserPath(ps)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 
-	// TODO check if user exists or 404
+	// extract banned user from path
+	var bannedUser int64
+	bannedUser, err = utils.ExtractBannedUserPath(ps)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 
-	// TODO extract banned user from path
+	// if user and banned user exists, user and banned user are not the same and permissions are valid (auth == user)
+	if rt.userExistsAndHasPermissions(w, user, auth, "User") &&
+		rt.notSameUser(w, user, bannedUser) &&
+		rt.userExists(w, bannedUser, "Banned user") {
+		// insert the ban relation into db
+		err = rt.db.BanUser(user, bannedUser)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 
-	// TODO check if banned user exists or 404
-
-	// TODO check permissions (auth == user)
-	if true {
-		// TODO insert the ban relation into db (ignore if already exists)
-
-		// TODO send 201 CREATED response with the user and banned user in the body
+		// send 201 CREATED response with the user and banned user in the body
+		w.Header().Set("content-type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		follow := types.Ban{User: user, BannedUser: bannedUser}
+		err = json.NewEncoder(w).Encode(follow)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 	}
 }
 
 // handler for DELETE on /users/:user/banned/:banned_user
 func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
-	// TODO extract user from path
 
-	// TODO check if user exists or 404
+	// extract user from path
+	user, err := utils.ExtractUserPath(ps)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 
-	// TODO extract banned user from path
+	// extract banned user from path
+	var bannedUser int64
+	bannedUser, err = utils.ExtractBannedUserPath(ps)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 
-	// TODO check if banned user exists or 404
+	// if user and banned user exists, user and banned user are not the same and permissions are valid (auth == user)
+	if rt.userExistsAndHasPermissions(w, user, auth, "User") &&
+		rt.notSameUser(w, user, bannedUser) &&
+		rt.userExists(w, bannedUser, "Banned user") {
+		// delete the ban relation from db (ignore if not exists)
+		err = rt.db.UnbanUser(user, bannedUser)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 
-	// TODO check permissions (auth == user)
-	if true {
-		// TODO delete the ban relation from db (ignore if not exists)
-
-		// TODO send 204 NO CONTENT response
+		// send 204 NO CONTENT response
+		w.WriteHeader(http.StatusNoContent)
 	}
 }

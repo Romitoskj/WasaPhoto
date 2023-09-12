@@ -18,6 +18,11 @@ type Follow struct {
 	Follower int64 `json:"follower"`
 }
 
+type Ban struct {
+	User       int64 `json:"user"`
+	BannedUser int64 `json:"banned_user"`
+}
+
 type Error struct {
 	Message string `json:"message"`
 }
