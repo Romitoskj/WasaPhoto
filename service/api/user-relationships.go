@@ -10,13 +10,32 @@ import (
 
 // handler for GET on /users/:user/followers/
 func (rt *_router) getFollowers(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
-	// TODO extract user from path
+	// extract user from path
+	user, err := utils.ExtractUserPath(ps)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 
-	// TODO check if user exists or 404
+	// check if user exists or 404
+	if rt.userExists(w, user, "User") {
 
-	// TODO get list of followers from db
+		// get list of followers from db
+		users, err := rt.db.GetFollowers(user, auth)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 
-	// TODO send followers list in the body of 200 OK response
+		// send users list in the body of 200 OK response
+		w.Header().Set("content-type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(w).Encode(users)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+	}
 }
 
 // handler for PUT on /users/:user/followers/:follower
@@ -94,13 +113,32 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 // handler for GET on /users/:user/following/
 func (rt *_router) getFollowing(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
-	// TODO extract user from path
+	// extract user from path
+	user, err := utils.ExtractUserPath(ps)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
 
-	// TODO check if user exists or 404
+	// check if user exists or 404
+	if rt.userExists(w, user, "User") {
 
-	// TODO get list of following from db
+		// get list of following from db
+		users, err := rt.db.GetFollowing(user, auth)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 
-	// TODO send followers list in the body of 200 OK response
+		// send users list in the body of 200 OK response
+		w.Header().Set("content-type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(w).Encode(users)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+	}
 }
 
 // handler for PUT on /users/:user/banned/:banned_user

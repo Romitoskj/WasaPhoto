@@ -54,6 +54,8 @@ type AppDatabase interface {
 	// user relationships
 	FollowUser(user int64, follower int64) error
 	UnfollowUser(user int64, follower int64) error
+	GetFollowers(id int64, auth int64) ([]types.User, error)
+	GetFollowing(id int64, auth int64) ([]types.User, error)
 
 	Ping() error
 }
