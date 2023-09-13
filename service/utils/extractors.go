@@ -60,3 +60,7 @@ func ExtractFollowerPath(ps httprouter.Params) (int64, error) {
 func ExtractBannedUserPath(ps httprouter.Params) (int64, error) {
 	return extractFromPath(ps, "banned_user")
 }
+
+func ExtractPhotoPath(ps httprouter.Params) (int64, error) {
+	return extractFromPath(ps, "photo")
+}

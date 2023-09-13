@@ -23,6 +23,14 @@ type Ban struct {
 	BannedUser int64 `json:"banned_user"`
 }
 
+type Photo struct {
+	Identifier int64  `json:"identifier"`
+	Author     int64  `json:"author"`
+	CreatedAt  string `json:"created_at"`
+	LikesN     int64  `json:"likes_n"`
+	CommentsN  int64  `json:"comments_n"`
+}
+
 type Error struct {
 	Message string `json:"message"`
 }

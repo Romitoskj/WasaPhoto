@@ -105,3 +105,16 @@ func (db *appdbimpl) UnbanUser(user int64, bannedUser int64) error {
 	_, err := db.c.Exec(`DELETE FROM ban WHERE banner=? AND banned=?`, user, bannedUser)
 	return err
 }
+
+// UserBanned returns true if the authenticated user is banned by another user
+func (db *appdbimpl) UserBanned(user int64, auth int64) (bool, error) {
+	var exists int
+	err := db.c.QueryRow("SELECT EXISTS (SELECT * FROM ban WHERE banner=? AND banned=?)", user, auth).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	if exists == 1 {
+		return true, nil
+	}
+	return false, nil
+}

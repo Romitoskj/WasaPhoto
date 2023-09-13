@@ -58,6 +58,16 @@ type AppDatabase interface {
 	GetFollowing(id int64, auth int64) ([]types.User, error)
 	BanUser(user int64, bannedUser int64) error
 	UnbanUser(user int64, bannedUser int64) error
+	UserBanned(user int64, auth int64) (bool, error)
+
+	// photos
+	UploadPhoto(img []byte, author int64) (int64, error)
+	GetPhoto(id int64) (types.Photo, error)
+	GetImage(id int64) ([]byte, error)
+	PhotoExists(user int64) (bool, error)
+	PhotoAuthor(id int64) (int64, error)
+	DeletePhoto(id int64) error
+	GetUserPhotos(author int64) ([]types.Photo, error)
 
 	Ping() error
 }
