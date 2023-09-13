@@ -110,6 +110,10 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 		// get image from db
 		var image []byte
 		image, err = rt.db.GetImage(photo)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
 
 		// send the image in 200 OK response body
 		w.Header().Set("Content-Type", "image/jpeg")
