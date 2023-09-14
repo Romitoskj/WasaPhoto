@@ -7,7 +7,7 @@ info:
     to WASAPhoto! You can upload your photos directly from your PC, and they
     will be visible to everyone following you.
   version: "1"
-  contact: 
+  contact:
     name: "Antonio Pietro Romito - mat. 1932500"
     email: "romito.1932500@studenti.uniroma1.it"
     url: "https://github.com/Romitoskj"
@@ -41,7 +41,7 @@ paths:
         content:
           application/json:
             schema: { $ref: '#/components/schemas/username' }
-              
+
         required: true
       responses:
         '201': { $ref: '#/components/responses/201Session' }
@@ -58,13 +58,13 @@ paths:
         schema: { $ref: '#/components/schemas/name' }
     get:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - User Profiles
       operationId: searchUser
       summary: Search an user by username
       description: |-
-        Return a list of users whose username match the given query string. 
+        Return a list of users whose username match the given query string.
       responses:
         '200': { $ref: '#/components/responses/200SearchUser' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
@@ -76,8 +76,8 @@ paths:
       - { $ref: '#/components/parameters/user' }
     get:
       security:
-        - bearerAuth: [] 
-      tags: 
+        - bearerAuth: []
+      tags:
         - User Profiles
       operationId: getUserProfile
       summary: Get the user profile page
@@ -85,7 +85,7 @@ paths:
         Return the user profile page of the specified user with its information
         (id, username, number of followers, number of following and number of
         photos uploaded) and photos in revers chronological order.
-      responses: 
+      responses:
         '200': { $ref: '#/components/responses/200GetUserProfile' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -97,7 +97,7 @@ paths:
       - { $ref: '#/components/parameters/user' }
     put:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - User Profiles
       operationId: setMyUserName
@@ -110,7 +110,7 @@ paths:
         content:
           application/json:
             schema: { $ref: '#/components/schemas/username' }
-      responses: 
+      responses:
         '204': { $ref: '#/components/responses/204Update' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
@@ -124,36 +124,36 @@ paths:
       - { $ref: '#/components/parameters/user' }
     get:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - User Relationships
       operationId: getFollowers
       summary: Get the list of followers
       description: |-
         Return the list of the users that follows the specified user.
-      responses: 
+      responses:
         '200': { $ref: '#/components/responses/200Followers' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
 
-  
+
   /users/{user}/followers/{follower}:
     parameters:
       - { $ref: '#/components/parameters/user' }
       - { $ref: '#/components/parameters/follower' }
     put:
       security:
-        - bearerAuth: [] 
-      tags: 
+        - bearerAuth: []
+      tags:
         - User Relationships
       operationId: followUser
       summary: Follow an user
       description: |-
         Make the specified user (follower) follow another user (user). It adds
-        the follower to the follower list of the user and the user to the 
+        the follower to the follower list of the user and the user to the
         following list of the follower.
-      responses: 
+      responses:
         '201': { $ref: '#/components/responses/201Follow' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -162,8 +162,8 @@ paths:
 
     delete:
       security:
-        - bearerAuth: [] 
-      tags: 
+        - bearerAuth: []
+      tags:
         - User Relationships
       operationId: unfollowUser
       summary: Unfollow an user
@@ -184,14 +184,14 @@ paths:
       - { $ref: '#/components/parameters/user' }
     get:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - User Relationships
       operationId: getFollowing
       summary: Get the list of following
       description: |-
         Return the list of the users that the specified user follows.
-      responses: 
+      responses:
         '200': { $ref: '#/components/responses/200Following' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -204,7 +204,7 @@ paths:
       - { $ref: '#/components/parameters/banned_user' }
     put:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - User Relationships
       operationId: banUser
@@ -219,13 +219,13 @@ paths:
 
     delete:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - User Relationships
       operationId: unbanUser
       summary: Unban an user
       description: Unban an user (banned_user) for another user (user).
-      responses: 
+      responses:
         '204': { $ref: '#/components/responses/204Delete' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -236,26 +236,10 @@ paths:
   /users/{user}/photos/:
     parameters:
       - { $ref: '#/components/parameters/user' }
-    get:
-      security:
-        - bearerAuth: [] 
-      tags: 
-        - Photos
-      operationId: getUserPhotos
-      summary: Get all the photos uploaded by an user
-      description: |-
-        Return a list containing all the photo of the provided user in reverse
-        chronological order.
-      responses: 
-        '200': { $ref: '#/components/responses/200Photos' }
-        '401': { $ref: '#/components/responses/401Unauthorized' }
-        '404': { $ref: '#/components/responses/404NotFound' }
-        '500': { $ref: '#/components/responses/500InternalServerError' }
-
     post:
       security:
-        - bearerAuth: [] 
-      tags: 
+        - bearerAuth: []
+      tags:
         - Photos
       operationId: uploadPhoto
       summary: Upload a photo
@@ -264,8 +248,8 @@ paths:
         description: The image file to upload.
         content:
           image/jpeg:
-            schema: { $ref: '#/components/schemas/image' } 
-      responses: 
+            schema: { $ref: '#/components/schemas/image' }
+      responses:
         '201': { $ref: '#/components/responses/201Photo' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
@@ -278,16 +262,16 @@ paths:
     parameters:
       - { $ref: '#/components/parameters/user' }
       - { $ref: '#/components/parameters/photo' }
-    get: 
+    get:
       security:
-        - bearerAuth: [] 
-      tags: 
+        - bearerAuth: []
+      tags:
         - Photos
       operationId: getPhoto
       summary: Get a specific photo of an user
       description: |-
         Return the jpeg file of the specified photo of the provided user.
-      responses: 
+      responses:
         '200': { $ref: '#/components/responses/200Photo' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -295,15 +279,15 @@ paths:
 
     delete:
       security:
-        - bearerAuth: [] 
-      tags: 
+        - bearerAuth: []
+      tags:
         - Photos
       operationId: deletePhoto
       summary: Delete a photo
       description: |-
         Delete the specified photo of the provided user. Removal of a photo also
         removes likes and comments.
-      responses: 
+      responses:
         '204': { $ref: '#/components/responses/204Delete' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -317,19 +301,19 @@ paths:
       - { $ref: '#/components/parameters/photo' }
     get:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - Photo Interactions
       operationId: getLikers
       summary: Get the list of users that like a specific photo
       description: |-
         Returns the list of users that like the specified photo.
-      responses: 
+      responses:
         '200': { $ref: '#/components/responses/200Likes' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
         '500': { $ref: '#/components/responses/500InternalServerError' }
-    
+
 
   /users/{user}/photos/{photo}/likes/{liker}:
     parameters:
@@ -338,7 +322,7 @@ paths:
       - { $ref: '#/components/parameters/liker' }
     put:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - Photo Interactions
       operationId: likePhoto
@@ -346,7 +330,7 @@ paths:
       description: |-
         Make the specified user (liker) likes a specific photo. It adds
         the liker to the likes list of the photo.
-      responses: 
+      responses:
         '201': { $ref: '#/components/responses/201Like' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -355,7 +339,7 @@ paths:
 
     delete:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - Photo Interactions
       operationId: unlikePhoto
@@ -377,13 +361,13 @@ paths:
       - { $ref: '#/components/parameters/photo' }
     get:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - Photo Interactions
       operationId: getComments
       summary: Get the list of comments of a specific photo
-      description: Return the list of comments of the specified photo. 
-      responses: 
+      description: Return the list of comments of the specified photo.
+      responses:
         '200': { $ref: '#/components/responses/200Comments' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '404': { $ref: '#/components/responses/404NotFound' }
@@ -391,7 +375,7 @@ paths:
 
     post:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - Photo Interactions
       operationId: commentPhoto
@@ -403,7 +387,7 @@ paths:
         content:
           application/json:
             schema: { $ref: '#/components/schemas/comment_content' }
-      responses: 
+      responses:
         '201': { $ref: '#/components/responses/201Comment' }
         '400': { $ref: '#/components/responses/400BadRequest' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
@@ -418,14 +402,14 @@ paths:
       - { $ref: '#/components/parameters/comment' }
     delete:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - Photo Interactions
       operationId: uncommentPhoto
       summary: Delete a comment
       description: |-
         Delete a comment from a photo.
-      responses: 
+      responses:
         '204': { $ref: '#/components/responses/204Delete'}
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -438,7 +422,7 @@ paths:
       - { $ref: '#/components/parameters/user' }
     get:
       security:
-        - bearerAuth: [] 
+        - bearerAuth: []
       tags:
         - Stream
       operationId: getMyStream
@@ -446,7 +430,7 @@ paths:
       description: |-
         Return a list of photos in revers chronological order based on the
         accounts the provided user follows.
-      responses: 
+      responses:
         '200': { $ref: '#/components/responses/200Photos' }
         '401': { $ref: '#/components/responses/401Unauthorized' }
         '403': { $ref: '#/components/responses/403Forbidden' }
@@ -475,16 +459,16 @@ components:
       title: Username
       description: This object represents the username chosen by an user.
       type: object
-      properties: 
+      properties:
         name: { $ref: '#/components/schemas/name' }
-        
+
     id:
       title: ID
       type: integer
       example: 123
       description: An integer auto-incremental ID.
 
-    other_id: 
+    other_id:
       title: Other ID
       type: integer
       example: 456
@@ -497,7 +481,7 @@ components:
       properties:
         identifier: { $ref: '#/components/schemas/id' }
         name: { $ref: '#/components/schemas/name' }
-        
+
     users:
       title: Users
       description: List of user objects.
@@ -533,7 +517,7 @@ components:
       format: binary
       minLength: 1
       maxLength: 100000000000
-        
+
     photos:
       title: Photos
       description: List of photos objects in revers chronological order.
@@ -562,7 +546,7 @@ components:
           example: 1000
         photos: { $ref: '#/components/schemas/photos' }
 
-    
+
     comment_content:
       title: Comment content
       description: The text of a comment.
@@ -595,7 +579,7 @@ components:
           maxLength: 1000
           example: "Nice picture!"
           description: The content of the comment
-        
+
     comments:
       title: Comments
       description: List of comment objects.
@@ -613,7 +597,7 @@ components:
           type: string
           description: The message.
           example: Error message.
-        
+
 
 
 
@@ -624,35 +608,35 @@ components:
       required: true
       description: The user identifier.
       schema: { $ref: '#/components/schemas/id' }
-      
+
     follower:
       name: follower
       in: path
       required: true
       description: The follower identifier.
       schema: { $ref: '#/components/schemas/other_id' }
-      
+
     banned_user:
       name: banned_user
       in: path
       required: true
       description: The banned user identifier.
       schema: { $ref: '#/components/schemas/other_id' }
-      
+
     photo:
       name: photo
       in: path
       required: true
       description: The photo identifier.
       schema: { $ref: '#/components/schemas/id' }
-            
+
     liker:
       name: liker
       in: path
       required: true
       description: The identifier of the user that likes the photo.
       schema: { $ref: '#/components/schemas/id' }
-      
+
     comment:
       name: comment
       in: path
@@ -662,7 +646,7 @@ components:
 
 
   responses:
-              
+
     200SearchUser:
       description: List of users.
       content:
@@ -674,37 +658,37 @@ components:
       content:
         application/json:
           schema: { $ref: '#/components/schemas/profile' }
-              
+
     200Followers:
       description: List of followers.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/users' }
-              
+
     200Following:
       description: List of following.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/users' }
-              
+
     200Photos:
       description: List of photos in reverse chronological order.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/photos' }
-              
+
     200Photo:
       description: A single photo.
       content:
         image/jpeg:
           schema: { $ref: '#/components/schemas/image' }
-              
+
     200Likes:
       description: A list of users.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/users' }
-              
+
     200Comments:
       description: A list of comments.
       content:
@@ -715,13 +699,13 @@ components:
       description: User log-in action successful
       content:
         application/json:
-          schema: 
+          schema:
             title: UserID
             description: User identifier
             type: object
             properties:
               identifier: { $ref: '#/components/schemas/id' }
-              
+
     201Follow:
       description: The resource has been created.
       content:
@@ -733,7 +717,7 @@ components:
             properties:
               user: { $ref: '#/components/schemas/id' }
               follower: { $ref: '#/components/schemas/other_id' }
-              
+
     201Ban:
       description: The resource has been created.
       content:
@@ -745,7 +729,7 @@ components:
             properties:
               user: { $ref: '#/components/schemas/id' }
               banned_user: { $ref: '#/components/schemas/other_id' }
-    
+
     201Photo:
       description: The photo has been uploaded.
       content:
@@ -763,53 +747,53 @@ components:
             properties:
               liker: { $ref: '#/components/schemas/id' }
               photo: { $ref: '#/components/schemas/id' }
-              
+
     201Comment:
       description: The comment as been uploaded.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/comment' }
-          
+
     204Update:
       description: The resource has been updated.
-          
+
     204Delete:
       description: The resource has been deleted.
 
 
     400BadRequest:
       description: The request is not valid.
-      content: 
-        application/json: 
+      content:
+        application/json:
           schema: { $ref: '#/components/schemas/error'}
           example: {"message": "The request body is not valid."}
 
     401Unauthorized:
       description: Authentication ID is missing or invalid.
-      content: 
-        application/json: 
+      content:
+        application/json:
           schema: { $ref: '#/components/schemas/error'}
           example: {"message": "Authentication ID is missing or invalid."}
-    
+
     403Forbidden:
       description: |-
         Action proibithed when performing an operation without permission.
-      content: 
-        application/json: 
+      content:
+        application/json:
           schema: { $ref: '#/components/schemas/error'}
           example: {"message": "This resource belongs to someone else."}
-    
+
     404NotFound:
       description: Resource not found.
-      content: 
-        application/json: 
+      content:
+        application/json:
           schema: { $ref: '#/components/schemas/error'}
           example: {"message": "Resource not found."}
-    
+
 
     500InternalServerError:
       description: Internal server error.
-      content: 
-        application/json: 
+      content:
+        application/json:
           schema: { $ref: '#/components/schemas/error'}
           example: {"message": "Internal server error."}
