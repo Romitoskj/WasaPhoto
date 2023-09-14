@@ -25,10 +25,20 @@ type Ban struct {
 
 type Photo struct {
 	Identifier int64  `json:"identifier"`
-	Author     int64  `json:"author"`
+	Author     string `json:"author"`
 	CreatedAt  string `json:"created_at"`
 	LikesN     int64  `json:"likes_n"`
 	CommentsN  int64  `json:"comments_n"`
+}
+
+type Profile struct {
+	Name       string  `json:"name"`
+	PhotoN     int64   `json:"photos_n"`
+	FollowersN int64   `json:"followers_n"`
+	FollowingN int64   `json:"following_n"`
+	Photos     []Photo `json:"photos"`
+	Followed   bool    `json:"followed"`
+	Owner      bool    `json:"owner"`
 }
 
 type Error struct {

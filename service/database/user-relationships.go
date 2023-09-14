@@ -118,3 +118,18 @@ func (db *appdbimpl) UserBanned(user int64, auth int64) (bool, error) {
 	}
 	return false, nil
 }
+
+// UserIsFollowed check if the authenticated user follows another user
+func (db *appdbimpl) UserIsFollowed(user int64, auth int64) (bool, error) {
+	var exists int
+	err := db.c.QueryRow(
+		"SELECT EXISTS (SELECT * FROM follow WHERE follower=? AND followed=?)",
+		auth, user).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	if exists == 1 {
+		return true, nil
+	}
+	return false, nil
+}

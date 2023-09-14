@@ -3,7 +3,17 @@ package database
 import "wasaphoto/service/types"
 
 // UploadPhoto insert a photo in db and return its id
-func (db *appdbimpl) UploadPhoto(img []byte, author int64) (int64, error) {
+func (db *appdbimpl) UploadPhoto(img []byte, authorId int64) (int64, error) {
+	var author string
+	err := db.c.QueryRow(`
+		SELECT username
+		FROM user
+		WHERE id = ?
+	`, authorId).Scan(&author)
+	if err != nil {
+		return 0, err
+	}
+
 	row, err := db.c.Exec(`
 		INSERT INTO photo (author, image) VALUES (?, ?)
 	`, author, img)
@@ -53,9 +63,10 @@ func (db *appdbimpl) PhotoExists(id int64) (bool, error) {
 func (db *appdbimpl) PhotoAuthor(id int64) (int64, error) {
 	var author int64
 	err := db.c.QueryRow(`
-		SELECT author
-		FROM photo
-		WHERE id = ?
+		SELECT u.id
+		FROM photo p
+		JOIN user u ON u.username = p.author
+		WHERE p.id = ?
 	`, id).Scan(&author)
 	return author, err
 }
@@ -67,7 +78,7 @@ func (db *appdbimpl) DeletePhoto(id int64) error {
 }
 
 // GetUserPhotos returns the list of photos of the specified user
-func (db *appdbimpl) GetUserPhotos(author int64) ([]types.Photo, error) {
+func (db *appdbimpl) GetUserPhotos(author string) ([]types.Photo, error) {
 	var photos []types.Photo
 
 	// Get all the users photos
@@ -78,6 +89,7 @@ func (db *appdbimpl) GetUserPhotos(author int64) ([]types.Photo, error) {
 			LEFT JOIN comment c on p.id = c.photo
 		WHERE p.author = ?
 		GROUP BY p.id
+		ORDER BY p.created_at DESC
 		`, author,
 	)
 	if err != nil {

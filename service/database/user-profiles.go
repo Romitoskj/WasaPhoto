@@ -72,3 +72,29 @@ func (db *appdbimpl) Search(search string, id int64) ([]types.User, error) {
 
 	return users, nil
 }
+
+// GetUserProfile return the user profile of the provided user id
+func (db *appdbimpl) GetUserProfile(id int64) (types.Profile, error) {
+	var profile types.Profile
+	err := db.c.QueryRow(`
+		SELECT u.username,
+		   (
+			   SELECT count(*)
+			   FROM follow f
+			   WHERE f.followed = u.id
+		   ) count_followers,
+		   (
+			   SELECT COUNT(*)
+			   FROM follow f
+			   WHERE f.follower = u.id
+		   ) count_followings,
+		   (
+			   SELECT count(*)
+			   FROM photo p
+			   WHERE u.id = p.author
+		   ) count_posts
+		FROM user u
+		WHERE u.id == ?
+	`, id).Scan(&profile.Name, &profile.FollowersN, &profile.FollowingN, &profile.PhotoN)
+	return profile, err
+}

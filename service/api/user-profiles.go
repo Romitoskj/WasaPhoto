@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"wasaphoto/service/types"
 
 	"wasaphoto/service/utils"
 )
@@ -36,7 +37,49 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 // handler function for GET on /users/:user
 func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
-	// TODO
+	// extract user from path
+	user, err := utils.ExtractUserPath(ps)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return
+	}
+
+	// if user exists and authenticated user is not banned by the user
+	if rt.userExists(w, user, "User") && rt.userNotBanned(w, user, auth) {
+		// get profile from db
+		var profile types.Profile
+		profile, err = rt.db.GetUserProfile(user)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+
+		// get photos from db
+		profile.Photos, err = rt.db.GetUserPhotos(profile.Name)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+
+		// check if authenticated user is the owner
+		profile.Owner = auth == user
+
+		// check if authenticated user follows the user
+		profile.Followed, err = rt.db.UserIsFollowed(user, auth)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+
+		// send photo list in the body of 200 OK response
+		w.Header().Set("content-type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(w).Encode(profile)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+	}
 }
 
 // handler function for PUT on /users/:user/username

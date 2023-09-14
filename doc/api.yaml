@@ -545,6 +545,14 @@ components:
           type: integer
           example: 1000
         photos: { $ref: '#/components/schemas/photos' }
+        followed:
+          description: True if the authenticated user follow the user.
+          type: boolean
+          example: true
+        owner:
+          description: True if the authenticated user is the owner of the profile.
+          type: boolean
+          example: false
 
 
     comment_content:

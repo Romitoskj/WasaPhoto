@@ -24,7 +24,6 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:user/banned/:banned_user", rt.authWrap(rt.unbanUser))
 
 	// photos
-	rt.router.GET("/users/:user/photos/", rt.authWrap(rt.getUserPhotos))
 	rt.router.POST("/users/:user/photos/", rt.authWrap(rt.uploadPhoto))
 	rt.router.GET("/users/:user/photos/:photo", rt.authWrap(rt.getPhoto))
 	rt.router.DELETE("/users/:user/photos/:photo", rt.authWrap(rt.deletePhoto))

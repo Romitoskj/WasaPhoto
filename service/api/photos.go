@@ -9,36 +9,6 @@ import (
 	"wasaphoto/service/utils"
 )
 
-// handler for GET on /users/:user/photos/
-func (rt *_router) getUserPhotos(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
-	// extract user from path
-	user, err := utils.ExtractUserPath(ps)
-	if err != nil {
-		utils.InternalServerError(w, err)
-		return
-	}
-
-	// if user exists and authenticated user is not banned by the user
-	if rt.userExists(w, user, "User") && rt.userNotBanned(w, user, auth) {
-		// get photos from db
-		var photos []types.Photo
-		photos, err = rt.db.GetUserPhotos(user)
-		if err != nil {
-			utils.InternalServerError(w, err)
-			return
-		}
-
-		// send photo list in the body of 200 OK response
-		w.Header().Set("content-type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		err = json.NewEncoder(w).Encode(photos)
-		if err != nil {
-			utils.InternalServerError(w, err)
-			return
-		}
-	}
-}
-
 // handler for POST on /users/:user/photos/
 func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, auth int64) {
 	// extract user from path

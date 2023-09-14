@@ -50,6 +50,7 @@ type AppDatabase interface {
 	UsernameExists(username string) (bool, error)
 	UserExists(user int64) (bool, error)
 	Search(search string, id int64) ([]types.User, error)
+	GetUserProfile(id int64) (types.Profile, error)
 
 	// user relationships
 	FollowUser(user int64, follower int64) error
@@ -59,15 +60,16 @@ type AppDatabase interface {
 	BanUser(user int64, bannedUser int64) error
 	UnbanUser(user int64, bannedUser int64) error
 	UserBanned(user int64, auth int64) (bool, error)
+	UserIsFollowed(user int64, auth int64) (bool, error)
 
 	// photos
-	UploadPhoto(img []byte, author int64) (int64, error)
+	UploadPhoto(img []byte, authorId int64) (int64, error)
 	GetPhoto(id int64) (types.Photo, error)
 	GetImage(id int64) ([]byte, error)
 	PhotoExists(user int64) (bool, error)
 	PhotoAuthor(id int64) (int64, error)
 	DeletePhoto(id int64) error
-	GetUserPhotos(author int64) ([]types.Photo, error)
+	GetUserPhotos(author string) ([]types.Photo, error)
 
 	Ping() error
 }
@@ -114,9 +116,9 @@ func New(db *sql.DB) (AppDatabase, error) {
 				"id"	INTEGER NOT NULL,
 				"created_at"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				"image"	BLOB NOT NULL,
-				"author"	INTEGER NOT NULL,
+				"author"	TEXT NOT NULL,
 				PRIMARY KEY("id" AUTOINCREMENT),
-				FOREIGN KEY("author") REFERENCES "user"("id") ON DELETE CASCADE
+				FOREIGN KEY("author") REFERENCES "user"("username") ON DELETE CASCADE ON UPDATE CASCADE
 			);
 
 			CREATE TABLE "like" (
@@ -131,19 +133,22 @@ func New(db *sql.DB) (AppDatabase, error) {
 				"id"	INTEGER NOT NULL,
 				"created_at"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				"content"	TEXT NOT NULL,
-				"author"	INTEGER NOT NULL,
+				"author"	TEXT NOT NULL,
 				"photo"	INTEGER NOT NULL,
-				FOREIGN KEY("author") REFERENCES "user"("id") ON DELETE CASCADE,
+				FOREIGN KEY("author") REFERENCES "user"("username") ON DELETE CASCADE ON UPDATE CASCADE ,
 				FOREIGN KEY("photo") REFERENCES "photo"("id") ON DELETE CASCADE,
 				PRIMARY KEY("id" AUTOINCREMENT)
 			);
-
-			PRAGMA foreign_keys = ON;
 		`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
 		}
+	}
+
+	_, err = db.Exec(`PRAGMA foreign_keys = ON;`)
+	if err != nil {
+		return nil, fmt.Errorf("error creating database structure: %w", err)
 	}
 
 	return &appdbimpl{
