@@ -169,6 +169,18 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 			return
 		}
 
+		// unfollow each other
+		err = rt.db.UnfollowUser(user, bannedUser)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+		err = rt.db.UnfollowUser(bannedUser, user)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+
 		// send 201 CREATED response with the user and banned user in the body
 		w.Header().Set("content-type", "application/json")
 		w.WriteHeader(http.StatusCreated)
