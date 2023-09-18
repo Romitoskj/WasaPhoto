@@ -17,6 +17,7 @@ func (db *appdbimpl) UnfollowUser(user int64, follower int64) error {
 // GetFollowers returns the list of users that follows the specified user
 func (db *appdbimpl) GetFollowers(id int64, auth int64) ([]types.User, error) {
 	var users []types.User
+	users = []types.User{}
 
 	// Get all the users that follows the specified user that have not banned the authenticated user
 	rows, err := db.c.Query(
@@ -57,6 +58,7 @@ func (db *appdbimpl) GetFollowers(id int64, auth int64) ([]types.User, error) {
 // GetFollowing returns the list of users that the specified user follows
 func (db *appdbimpl) GetFollowing(id int64, auth int64) ([]types.User, error) {
 	var users []types.User
+	users = []types.User{}
 
 	// Get all the users that the specified user follows that have not banned the authenticated user
 	rows, err := db.c.Query(

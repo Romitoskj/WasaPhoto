@@ -37,6 +37,7 @@ func (db *appdbimpl) UserExists(id int64) (bool, error) {
 // Search return a list of user that match the search string
 func (db *appdbimpl) Search(search string, id int64) ([]types.User, error) {
 	var users []types.User
+	users = []types.User{}
 
 	// Get all the users that starts with the search string that have not banned the authenticated user
 	rows, err := db.c.Query(

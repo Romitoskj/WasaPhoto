@@ -82,6 +82,7 @@ func (db *appdbimpl) DeletePhoto(id int64) error {
 // GetUserPhotos returns the list of photos of the specified user
 func (db *appdbimpl) GetUserPhotos(user int64, auth int64) ([]types.Photo, error) {
 	var photos []types.Photo
+	photos = []types.Photo{}
 
 	// Get all the users photos
 	rows, err := db.c.Query(
