@@ -71,6 +71,11 @@ type AppDatabase interface {
 	DeletePhoto(id int64) error
 	GetUserPhotos(author string) ([]types.Photo, error)
 
+	// photo interactions
+
+	// stream
+	GetStream(author string) ([]types.Photo, error)
+
 	Ping() error
 }
 
@@ -116,9 +121,9 @@ func New(db *sql.DB) (AppDatabase, error) {
 				"id"	INTEGER NOT NULL,
 				"created_at"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				"image"	BLOB NOT NULL,
-				"author"	TEXT NOT NULL,
+				"author"	INTEGER NOT NULL,
 				PRIMARY KEY("id" AUTOINCREMENT),
-				FOREIGN KEY("author") REFERENCES "user"("username") ON DELETE CASCADE ON UPDATE CASCADE
+				FOREIGN KEY("author") REFERENCES "user"("id") ON DELETE CASCADE
 			);
 
 			CREATE TABLE "like" (
@@ -133,9 +138,9 @@ func New(db *sql.DB) (AppDatabase, error) {
 				"id"	INTEGER NOT NULL,
 				"created_at"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				"content"	TEXT NOT NULL,
-				"author"	TEXT NOT NULL,
+				"author"	INTEGER NOT NULL,
 				"photo"	INTEGER NOT NULL,
-				FOREIGN KEY("author") REFERENCES "user"("username") ON DELETE CASCADE ON UPDATE CASCADE ,
+				FOREIGN KEY("author") REFERENCES "user"("id") ON DELETE CASCADE,
 				FOREIGN KEY("photo") REFERENCES "photo"("id") ON DELETE CASCADE,
 				PRIMARY KEY("id" AUTOINCREMENT)
 			);
@@ -146,9 +151,9 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	_, err = db.Exec(`PRAGMA foreign_keys = ON;`)
+	_, err = db.Exec(`PRAGMA foreign_keys = ON;`) // enable foreign keys
 	if err != nil {
-		return nil, fmt.Errorf("error creating database structure: %w", err)
+		return nil, fmt.Errorf("error enabling foreign keys: %w", err)
 	}
 
 	return &appdbimpl{

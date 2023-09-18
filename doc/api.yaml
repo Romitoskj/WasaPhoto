@@ -6,7 +6,7 @@ info:
     Keep in touch with your friends by sharing photos of special moments, thanks
     to WASAPhoto! You can upload your photos directly from your PC, and they
     will be visible to everyone following you.
-  version: "1"
+  version: "2.0"
   contact:
     name: "Antonio Pietro Romito - mat. 1932500"
     email: "romito.1932500@studenti.uniroma1.it"
@@ -496,7 +496,7 @@ components:
       type: object
       properties:
         identifier: { $ref: '#/components/schemas/id' }
-        author: { $ref: '#/components/schemas/name' }
+        author: { $ref: '#/components/schemas/user' }
         created_at:
           type: string
           format: date-time
@@ -510,6 +510,11 @@ components:
           type: integer
           example: 20
           description: Comments count.
+        liked:
+          description: True if the authenticated user likes the photo.
+          type: boolean
+          example: true
+
     image:
       title: Image
       description: This object represents the image file of a photo.
@@ -549,10 +554,6 @@ components:
           description: True if the authenticated user follow the user.
           type: boolean
           example: true
-        owner:
-          description: True if the authenticated user is the owner of the profile.
-          type: boolean
-          example: false
 
 
     comment_content:
@@ -574,7 +575,7 @@ components:
       type: object
       properties:
         identifier: { $ref: '#/components/schemas/id' }
-        author: { $ref: '#/components/schemas/name' }
+        author: { $ref: '#/components/schemas/user' }
         created_at:
           type: string
           format: date-time

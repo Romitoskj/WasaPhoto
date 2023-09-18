@@ -3,7 +3,7 @@ package database
 import "wasaphoto/service/types"
 
 // UploadPhoto insert a photo in db and return its id
-func (db *appdbimpl) UploadPhoto(img []byte, authorId int64) (int64, error) {
+func (db *appdbimpl) UploadPhoto(img []byte, authorId int64) (int64, error) { // TODO add author id
 	var author string
 	err := db.c.QueryRow(`
 		SELECT username
@@ -26,7 +26,7 @@ func (db *appdbimpl) UploadPhoto(img []byte, authorId int64) (int64, error) {
 }
 
 // GetPhoto get photo information from db given a photo id
-func (db *appdbimpl) GetPhoto(id int64) (types.Photo, error) {
+func (db *appdbimpl) GetPhoto(id int64) (types.Photo, error) { // TODO add author id
 	var photo types.Photo
 	err := db.c.QueryRow(`
 		SELECT p.id, p.created_at, p.author, COUNT(l.liker) likes_n, COUNT(c.id) comments_n
@@ -60,7 +60,7 @@ func (db *appdbimpl) PhotoExists(id int64) (bool, error) {
 }
 
 // PhotoAuthor returns the author id of a photo given its id
-func (db *appdbimpl) PhotoAuthor(id int64) (int64, error) {
+func (db *appdbimpl) PhotoAuthor(id int64) (int64, error) { // TODO add author id
 	var author int64
 	err := db.c.QueryRow(`
 		SELECT u.id
@@ -78,7 +78,7 @@ func (db *appdbimpl) DeletePhoto(id int64) error {
 }
 
 // GetUserPhotos returns the list of photos of the specified user
-func (db *appdbimpl) GetUserPhotos(author string) ([]types.Photo, error) {
+func (db *appdbimpl) GetUserPhotos(author string) ([]types.Photo, error) { // TODO add author id
 	var photos []types.Photo
 
 	// Get all the users photos
@@ -88,7 +88,7 @@ func (db *appdbimpl) GetUserPhotos(author string) ([]types.Photo, error) {
 			LEFT JOIN like l ON p.id = l.photo
 			LEFT JOIN comment c on p.id = c.photo
 		WHERE p.author = ?
-		GROUP BY p.id
+		GROUP BY p.id, p.created_at, p.author
 		ORDER BY p.created_at DESC
 		`, author,
 	)
