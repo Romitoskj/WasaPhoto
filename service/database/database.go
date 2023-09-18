@@ -73,6 +73,15 @@ type AppDatabase interface {
 
 	// photo interactions
 	LikeExists(liker int64, photo int64) (bool, error)
+	LikePhoto(user int64, photo int64) error
+	UnlikePhoto(user int64, photo int64) error
+	GetLikers(photo int64, auth int64) ([]types.User, error)
+	CommentPhoto(photo int64, content string, author int64) (int64, error)
+	UncommentPhoto(comment int64) error
+	GetComments(photo int64, auth int64) ([]types.Comment, error)
+	GetComment(id int64) (types.Comment, error)
+	CommentAuthor(id int64) (int64, error)
+	CommentBelongsToPhoto(photo int64, comment int64) (bool, error)
 
 	// stream
 	GetStream(user int64) ([]types.Photo, error)

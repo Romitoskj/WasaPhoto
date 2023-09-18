@@ -53,6 +53,17 @@ func ExtractUsernameBody(r *http.Request) (string, error) {
 	return username.Username, nil
 }
 
+func ExtractCommentBody(r *http.Request) (string, error) {
+	var comment types.CommentContent
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&comment)
+	if err != nil {
+		return "", errors.New("")
+	}
+	return comment.Content, nil
+}
+
 func ExtractFollowerPath(ps httprouter.Params) (int64, error) {
 	return extractFromPath(ps, "follower")
 }
@@ -63,4 +74,12 @@ func ExtractBannedUserPath(ps httprouter.Params) (int64, error) {
 
 func ExtractPhotoPath(ps httprouter.Params) (int64, error) {
 	return extractFromPath(ps, "photo")
+}
+
+func ExtractLikerPath(ps httprouter.Params) (int64, error) {
+	return extractFromPath(ps, "liker")
+}
+
+func ExtractCommentPath(ps httprouter.Params) (int64, error) {
+	return extractFromPath(ps, "comment")
 }

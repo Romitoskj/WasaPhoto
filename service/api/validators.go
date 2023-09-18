@@ -63,7 +63,7 @@ func (rt *_router) usernameIsAvailable(w http.ResponseWriter, username string) b
 // Returns true if the users are not the same, otherwise returns false and send 400 BAD REQUEST response
 func (rt *_router) notSameUser(w http.ResponseWriter, uid int64, uid2 int64) bool {
 	if uid == uid2 {
-		utils.BadRequest(w, "Impossible to follow/ban yourself.")
+		utils.BadRequest(w, "Impossible to follow/ban yourself nor like your own photos.")
 		return false
 	}
 	return true
@@ -107,6 +107,34 @@ func (rt *_router) userIsPhotoAuthor(w http.ResponseWriter, user int64, photo in
 	}
 	if author != user {
 		utils.NotFound(w, "Photo")
+		return false
+	}
+	return true
+}
+
+// Return true if the comment author is the given user, otherwise send 403 FORBIDDEN and return false
+func (rt *_router) userIsCommentAuthor(w http.ResponseWriter, user int64, comment int64) bool {
+	author, err := rt.db.CommentAuthor(comment)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return false
+	}
+	if author != user {
+		utils.Forbidden(w)
+		return false
+	}
+	return true
+}
+
+// Return true if the comment belong to the given photo, otherwise send 404 NOT FOUND and return false
+func (rt *_router) commentBelongsToPhoto(w http.ResponseWriter, photo int64, comment int64) bool {
+	exists, err := rt.db.CommentBelongsToPhoto(photo, comment)
+	if err != nil {
+		utils.InternalServerError(w, err)
+		return false
+	}
+	if !exists {
+		utils.NotFound(w, "Comment")
 		return false
 	}
 	return true

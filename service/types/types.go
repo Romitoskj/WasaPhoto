@@ -41,6 +41,22 @@ type Profile struct {
 	Followed   bool    `json:"followed"`
 }
 
+type Like struct {
+	Liker int64 `json:"liker"`
+	Photo int64 `json:"photo"`
+}
+
+type Comment struct {
+	Identifier int64  `json:"identifier"`
+	Author     User   `json:"author"`
+	CreatedAt  string `json:"created_at"`
+	Content    string `json:"content"`
+}
+
+type CommentContent struct {
+	Content string `json:"content"`
+}
+
 type Error struct {
 	Message string `json:"message"`
 }
