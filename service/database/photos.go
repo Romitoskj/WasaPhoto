@@ -89,7 +89,7 @@ func (db *appdbimpl) GetUserPhotos(user int64, auth int64) ([]types.Photo, error
 		FROM photo p
 			LEFT JOIN like l ON p.id = l.photo
 			LEFT JOIN comment c on p.id = c.photo
-			JOIN user u on p.author = u.id
+			JOIN user u ON p.author = u.id
 		WHERE p.author = ?
 		GROUP BY p.id, p.created_at, p.author
 		ORDER BY p.created_at DESC

@@ -75,7 +75,7 @@ type AppDatabase interface {
 	LikeExists(liker int64, photo int64) (bool, error)
 
 	// stream
-	GetStream(author string) ([]types.Photo, error)
+	GetStream(user int64) ([]types.Photo, error)
 
 	Ping() error
 }
