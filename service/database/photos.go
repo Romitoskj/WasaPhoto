@@ -34,6 +34,9 @@ func (db *appdbimpl) GetPhoto(id int64, auth int64) (types.Photo, error) {
 		&photo.LikesN,
 		&photo.CommentsN,
 	)
+	if err != nil {
+		return photo, err
+	}
 
 	photo.Liked, err = db.LikeExists(auth, id)
 	return photo, err
@@ -111,6 +114,9 @@ func (db *appdbimpl) GetUserPhotos(user int64, auth int64) ([]types.Photo, error
 			return nil, err
 		}
 		photo.Liked, err = db.LikeExists(auth, photo.Identifier)
+		if err != nil {
+			return nil, err
+		}
 		photos = append(photos, photo)
 	}
 
