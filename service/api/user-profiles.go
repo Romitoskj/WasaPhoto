@@ -55,14 +55,11 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		}
 
 		// get photos from db
-		profile.Photos, err = rt.db.GetUserPhotos(profile.Name)
+		profile.Photos, err = rt.db.GetUserPhotos(user, auth)
 		if err != nil {
 			utils.InternalServerError(w, err)
 			return
 		}
-
-		// check if authenticated user is the owner
-		profile.Owner = auth == user
 
 		// check if authenticated user follows the user
 		profile.Followed, err = rt.db.UserIsFollowed(user, auth)

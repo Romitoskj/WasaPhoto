@@ -64,14 +64,15 @@ type AppDatabase interface {
 
 	// photos
 	UploadPhoto(img []byte, authorId int64) (int64, error)
-	GetPhoto(id int64) (types.Photo, error)
+	GetPhoto(id int64, auth int64) (types.Photo, error)
 	GetImage(id int64) ([]byte, error)
 	PhotoExists(user int64) (bool, error)
 	PhotoAuthor(id int64) (int64, error)
 	DeletePhoto(id int64) error
-	GetUserPhotos(author string) ([]types.Photo, error)
+	GetUserPhotos(user int64, auth int64) ([]types.Photo, error)
 
 	// photo interactions
+	LikeExists(liker int64, photo int64) (bool, error)
 
 	// stream
 	GetStream(author string) ([]types.Photo, error)

@@ -38,7 +38,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 		// get photo object from db
 		var photo types.Photo
-		photo, err = rt.db.GetPhoto(photoId)
+		photo, err = rt.db.GetPhoto(photoId, auth)
 		if err != nil {
 			utils.InternalServerError(w, err)
 			return
