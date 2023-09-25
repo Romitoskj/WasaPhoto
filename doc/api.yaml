@@ -790,7 +790,7 @@ components:
 
     403Forbidden:
       description: |-
-        Action proibithed when performing an operation without permission.
+        Action prohibited when performing an operation without permission.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/error'}
