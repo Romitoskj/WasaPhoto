@@ -39,6 +39,7 @@ type Profile struct {
 	FollowingN int64   `json:"following_n"`
 	Photos     []Photo `json:"photos"`
 	Followed   bool    `json:"followed"`
+	Banned     bool    `json:"banned"`
 }
 
 type Like struct {

@@ -61,6 +61,7 @@ type AppDatabase interface {
 	UnbanUser(user int64, bannedUser int64) error
 	UserBanned(user int64, auth int64) (bool, error)
 	UserIsFollowed(user int64, auth int64) (bool, error)
+	UserIsBanned(user int64, auth int64) (bool, error)
 
 	// photos
 	UploadPhoto(img []byte, authorId int64) (int64, error)

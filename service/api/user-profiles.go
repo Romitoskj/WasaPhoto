@@ -68,6 +68,13 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 			return
 		}
 
+		// check if authenticated user has banned the user
+		profile.Banned, err = rt.db.UserIsBanned(user, auth)
+		if err != nil {
+			utils.InternalServerError(w, err)
+			return
+		}
+
 		// send photo list in the body of 200 OK response
 		w.Header().Set("content-type", "application/json")
 		w.WriteHeader(http.StatusOK)
