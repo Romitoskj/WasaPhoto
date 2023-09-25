@@ -4,10 +4,10 @@ package main
 
 import (
 	"fmt"
-	"wasaphoto/webui"
 	"io/fs"
 	"net/http"
 	"strings"
+	"wasaphoto/webui"
 )
 
 func registerWebUI(hdl http.Handler) (http.Handler, error) {
