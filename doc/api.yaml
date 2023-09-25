@@ -554,6 +554,10 @@ components:
           description: True if the authenticated user follow the user.
           type: boolean
           example: true
+        banned:
+          description: True if the authenticated user has banned the user.
+          type: boolean
+          example: false
 
 
     comment_content:
