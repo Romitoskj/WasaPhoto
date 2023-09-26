@@ -4,7 +4,6 @@ import router from './router'
 import axios from './services/axios.js';
 import ErrorMsg from './components/ErrorMsg.vue'
 import LoadingSpinner from './components/LoadingSpinner.vue'
-import Login from "./views/LoginView.vue";
 
 import './assets/dashboard.css'
 import './assets/main.css'
@@ -29,6 +28,5 @@ app.config.globalProperties.$axios = axios;
 app.config.globalProperties.$session = session;
 app.component("ErrorMsg", ErrorMsg);
 app.component("LoadingSpinner", LoadingSpinner);
-app.component("Login", Login)
 app.use(router)
 app.mount('#app')

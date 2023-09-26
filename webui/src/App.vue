@@ -12,7 +12,7 @@ export default {
 		logout() {
 			delete this.$axios.defaults.headers.common["Authorization"]
 			this.$session.logout()
-			this.$router.push("/");
+			this.$router.push("/login");
 		}
 	},
 }
@@ -21,10 +21,7 @@ export default {
 <template>
 
 	<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#/" v-if="this.$route.name === 'login'">
-			Wasa Photo
-		</a>
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#/stream" v-else>
+		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#/">
 			Wasa Photo
 		</a>
 		<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
@@ -50,7 +47,7 @@ export default {
 					</h6>
 					<ul class="nav flex-column">
 						<li class="nav-item">
-							<RouterLink to="/stream" class="nav-link">
+							<RouterLink to="/" class="nav-link">
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#home"/>
 								</svg>
@@ -88,7 +85,7 @@ export default {
 							</RouterLink>
 						</li>
 						<li class="nav-item">
-							<RouterLink to="/upload-photo" class="nav-link" @click="logout">
+							<RouterLink to="/login" class="nav-link" @click="logout">
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#log-out"/>
 								</svg>

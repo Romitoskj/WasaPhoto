@@ -1,11 +1,15 @@
-<script setup>
+<script>
+export default {
+	data () {
+		return {
+			users: [],
+			query: ""
+		}
+	}
+}
 
 </script>
 
 <template>
 
 </template>
-
-<style scoped>
-
-</style>

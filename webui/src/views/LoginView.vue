@@ -19,7 +19,7 @@ export default {
 				this.errormsg = e.toString();
 			}
 			this.loading = false
-			this.$router.push('/stream')
+			this.$router.push('/')
 		}
 	}
 }
