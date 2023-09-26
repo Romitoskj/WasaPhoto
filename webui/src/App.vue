@@ -3,7 +3,7 @@ import {RouterLink, RouterView} from 'vue-router'
 </script>
 <script>
 export default {
-	data(){
+	data() {
 		return {
 			username: this.$session.username,
 		}
@@ -21,7 +21,7 @@ export default {
 <template>
 
 	<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#/">
+		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/"> <!-- TODO fix redirect to stream or login-->
 			Wasa Photo
 		</a>
 		<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"

@@ -1,9 +1,41 @@
 <script>
+import LoadingSpinner from "../components/LoadingSpinner.vue";
+
 export default {
-	data () {
+	components: {LoadingSpinner},
+	data() {
 		return {
 			users: [],
-			query: ""
+			query: "",
+			errormsg: null,
+			loading: false,
+		}
+	},
+	mounted() {
+		if (this.$session.id === -1) {
+			this.$router.push('/login')
+		}
+
+		this.refresh()
+	},
+	methods: {
+		async refresh(searchQuery) {
+			this.loading = true
+			this.errormsg = null
+			try {
+				if (this.query.length > 0) {
+					let response = await this.$axios.get("/users/?search=" + searchQuery)
+					this.users = response.data
+				}
+			} catch (e) {
+				this.errormsg = e.toString()
+			}
+			this.loading = false
+		},
+	},
+	watch: {
+		query(newQuery) {
+			this.refresh(newQuery)
 		}
 	}
 }
@@ -11,5 +43,35 @@ export default {
 </script>
 
 <template>
-
+	<div
+		class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+		<h1 class="h2">Search user</h1>
+	</div>
+	<div class="container d-flex flex-column min-vh-100 align-items-center my-5 gap-3">
+		<h4 class="border rounded">
+			<input
+				type="text"
+				class="d-flex px-2 py-1"
+				v-model="this.query"
+				style="outline: none; border: none; background: none"
+				placeholder="Type an user name"
+			>
+		</h4>
+		<LoadingSpinner v-if="loading"></LoadingSpinner>
+		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+		<h5 v-if="users.length === 0 && query.length > 0">No user found</h5>
+		<div class="d-flex flex-column gap-2 w-50" v-else-if="query.length > 0">
+			<router-link
+				v-for="user in users"
+				:key="user.identifier"
+				:to="'/profile/' + user.name"
+				class="text-decoration-none text-dark border px-2 py-1 rounded"
+			>
+				<svg class="feather">
+					<use href="/feather-sprite-v4.29.0.svg#user"/>
+				</svg>
+				{{ user.name }}
+			</router-link>
+		</div>
+	</div>
 </template>
