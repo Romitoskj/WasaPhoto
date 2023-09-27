@@ -15,8 +15,6 @@ export default {
 		if (this.$session.id === -1) {
 			this.$router.push('/login')
 		}
-
-		this.refresh()
 	},
 	methods: {
 		async refresh(searchQuery) {
@@ -51,7 +49,7 @@ export default {
 		<h4 class="border rounded">
 			<input
 				type="text"
-				class="d-flex px-2 py-1"
+				class="d-flex px-2 py-2"
 				v-model="this.query"
 				style="outline: none; border: none; background: none"
 				placeholder="Type an user name"
@@ -64,7 +62,7 @@ export default {
 			<router-link
 				v-for="user in users"
 				:key="user.identifier"
-				:to="'/profile/' + user.name"
+				:to="'/profile/' + user.identifier"
 				class="text-decoration-none text-dark border px-2 py-1 rounded"
 			>
 				<svg class="feather">

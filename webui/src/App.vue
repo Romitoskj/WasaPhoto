@@ -21,9 +21,9 @@ export default {
 <template>
 
 	<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/"> <!-- TODO fix redirect to stream or login-->
+		<RouterLink to="/" class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6">
 			Wasa Photo
-		</a>
+		</RouterLink>
 		<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
 				data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
 				aria-label="Toggle navigation">
@@ -77,7 +77,7 @@ export default {
 					</h6>
 					<ul class="nav flex-column">
 						<li class="nav-item">
-							<RouterLink :to="'/profile/' + this.username" class="nav-link">
+							<RouterLink :to="'/profile/' + this.$session.id" class="nav-link">
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#user"/>
 								</svg>
