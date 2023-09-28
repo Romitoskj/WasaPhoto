@@ -24,9 +24,15 @@ export default {
 				if (this.query.length > 0) {
 					let response = await this.$axios.get("/users/?search=" + searchQuery)
 					this.users = response.data
+				} else {
+					this.users = []
 				}
 			} catch (e) {
-				this.errormsg = e.toString()
+				if (e.response.data !== undefined) {
+					this.errormsg = e.response.data.message
+				} else {
+					this.errormsg = e.toString()
+				}
 			}
 			this.loading = false
 		},
@@ -55,7 +61,6 @@ export default {
 				placeholder="Type an user name"
 			>
 		</h4>
-		<LoadingSpinner v-if="loading"></LoadingSpinner>
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 		<h5 v-if="users.length === 0 && query.length > 0">No user found</h5>
 		<div class="d-flex flex-column gap-2 w-50" v-else-if="query.length > 0">
@@ -71,5 +76,6 @@ export default {
 				{{ user.name }}
 			</router-link>
 		</div>
+		<LoadingSpinner :loading="loading"></LoadingSpinner>
 	</div>
 </template>

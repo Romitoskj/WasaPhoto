@@ -7,6 +7,7 @@ import LoadingSpinner from './components/LoadingSpinner.vue'
 
 import './assets/dashboard.css'
 import './assets/main.css'
+import UploadModal from "./components/UploadModal.vue";
 
 const session = {
 	id: -1,
@@ -28,5 +29,6 @@ app.config.globalProperties.$axios = axios;
 app.config.globalProperties.$session = session;
 app.component("ErrorMsg", ErrorMsg);
 app.component("LoadingSpinner", LoadingSpinner);
+app.component("UploadModal", UploadModal)
 app.use(router)
 app.mount('#app')

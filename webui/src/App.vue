@@ -62,14 +62,6 @@ export default {
 								Search user
 							</RouterLink>
 						</li>
-						<li class="nav-item">
-							<RouterLink to="/upload-photo" class="nav-link">
-								<svg class="feather">
-									<use href="/feather-sprite-v4.29.0.svg#upload"/>
-								</svg>
-								Upload photo
-							</RouterLink>
-						</li>
 					</ul>
 
 					<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">

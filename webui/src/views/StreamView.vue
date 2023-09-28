@@ -1,15 +1,12 @@
 <script>
 import {RouterLink} from "vue-router";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 export default {
-	components: {LoadingSpinner, RouterLink},
 	data: function() {
 		return {
 			errormsg: null,
 			loading: false,
 			stream: [],
-			uploadError: null,
 		}
 	},
 	methods: {
@@ -20,23 +17,13 @@ export default {
 				let response = await this.$axios.get("/users/" + this.$session.id + "/stream");
 				this.stream = response.data;
 			} catch (e) {
-				this.errormsg = e.toString();
+				if (e.response.data !== undefined) {
+					this.errormsg = e.response.data.message
+				} else {
+					this.errormsg = e.toString()
+				}
 			}
 			this.loading = false;
-		},
-		async uploadPhoto() {
-			this.loading = true;
-			this.uploadError = false;
-			const photo = this.$refs.photo.files[0]
-			if (photo) {
-				try {
-					await this.$axios.post("/users/" + this.$session.id + "/photos/")
-					this.uploadError = null
-				} catch (e) {
-					this.uploadError = e.toString();
-				}
-				this.loading = false;
-			}
 		}
 	},
 	mounted() {
@@ -57,7 +44,7 @@ export default {
 			<h1 class="h2">Welcome {{ this.$session.username }}!</h1>
 			<div class="btn-toolbar mb-2 mb-md-0">
 				<div class="btn-group me-2">
-					<!-- Button trigger for upload photo modal -->
+					<!-- Button for upload photo modal -->
 					<button  type="button"  class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#upload"/>
@@ -71,9 +58,9 @@ export default {
 		<!-- Main content -->
 		<div class="container d-flex flex-column min-vh-100 align-items-center my-5 gap-3">
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-			<LoadingSpinner v-if="loading"></LoadingSpinner>
+			<LoadingSpinner :loading="loading"></LoadingSpinner>
 
-			<div class="container d-flex flex-column min-vh-100 align-items-center" v-if="stream.length === 0">
+			<div class="container d-flex flex-column min-vh-100 align-items-center" v-if="stream.length === 0 && !loading">
 				<h4>
 					There's nothing here
 					<svg class="feather">
@@ -89,28 +76,6 @@ export default {
 		</div>
 	</div>
 
-	<!-- Upload modal -->
-	<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<form class="d-flex flex-column gap-3" @submit.prevent="uploadPhoto">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLongTitle">Upload photo</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-							<div class="d-flex flex-column gap-3 p-3">
-								<input type="file" ref="photo" accept="image/jpeg">
-							</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Add Photo</button>
-					</div>
-
-				</form>
-			</div>
-		</div>
-	</div>
+	<UploadModal></UploadModal>
 
 </template>
