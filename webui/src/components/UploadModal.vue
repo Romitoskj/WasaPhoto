@@ -13,6 +13,10 @@ export default {
 		}
 	},
 	methods: {
+		close() {
+			this.errormsg = null
+			this.uploadSuccessful = false
+		},
 		async uploadPhoto() {
 			this.loading = true;
 			this.errormsg = false;
@@ -31,6 +35,8 @@ export default {
 					}
 				}
 				this.loading = false;
+			} else {
+				this.errormsg = "No photo selected."
 			}
 		}
 	},
@@ -45,7 +51,7 @@ export default {
 				<form class="d-flex flex-column gap-3" ref="upload" @submit.prevent="uploadPhoto">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLongTitle">Upload photo</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close"></button>
 					</div>
 					<div class="modal-body">
 						<div class="alert alert-success" v-if="uploadSuccessful">Photo successfully uploaded!</div>
@@ -55,7 +61,7 @@ export default {
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="close">Close</button>
 						<button type="submit" class="btn btn-primary">Add Photo</button>
 					</div>
 
