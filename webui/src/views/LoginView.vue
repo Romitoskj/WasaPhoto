@@ -41,7 +41,7 @@ export default {
 				<h3 class="card-title mt-2">Login</h3>
 			</div>
 			<div class="card-body">
-				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg> <!-- TODO display error message when backend is down -->
+				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 				<form @submit.prevent="login" class="d-flex flex-column gap-4">
 					<div class="form-group">
 						<h6><label for="username">Username:</label></h6>
