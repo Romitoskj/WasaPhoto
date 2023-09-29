@@ -1,7 +1,9 @@
 <script>
 import {RouterLink} from "vue-router";
+import Post from "../components/Post.vue";
 
 export default {
+	components: {Post},
 	data: function() {
 		return {
 			errormsg: null,
@@ -70,9 +72,7 @@ export default {
 				<h6>You need to follow someone to see posts in your stream</h6>
 			</div>
 
-			<div v-for="photo in stream">
-				{{ photo }}
-			</div>
+			<Post :photo="photo" v-for="photo in stream"></Post>
 		</div>
 	</div>
 
