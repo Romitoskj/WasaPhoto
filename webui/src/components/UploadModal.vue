@@ -36,6 +36,7 @@ export default {
 				}
 				this.loading = false;
 			} else {
+				this.uploadSuccessful = false
 				this.errormsg = "No photo selected."
 			}
 		}
