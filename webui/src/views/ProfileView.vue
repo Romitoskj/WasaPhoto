@@ -33,8 +33,6 @@ export default {
 		}
 	},
 	mounted() {
-
-		console.log("starting mounting")
 		if (this.$session.id === -1) {
 			this.$router.push('/login')
 		} else {
