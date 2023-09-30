@@ -10,7 +10,7 @@ const router = createRouter({
 		{path: '/', component: Stream},
 		{path: '/login', component: LoginView, name:'login'},
 		{path: '/search', component: SearchView},
-		{path: '/profile/:username', component: ProfileView},
+		{path: '/profile/:id', component: ProfileView},
 	]
 })
 
