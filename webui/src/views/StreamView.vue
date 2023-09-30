@@ -62,7 +62,7 @@ export default {
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 			<LoadingSpinner :loading="loading"></LoadingSpinner>
 
-			<div class="container d-flex flex-column min-vh-100 align-items-center" v-if="stream.length === 0 && !loading">
+			<div class="container d-flex flex-column min-vh-100 align-items-center" v-if="stream.length === 0 && !loading && !errormsg">
 				<h4>
 					There's nothing here
 					<svg class="feather">
