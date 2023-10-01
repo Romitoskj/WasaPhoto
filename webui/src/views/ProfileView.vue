@@ -86,7 +86,7 @@ export default {
 			</div>
 
 
-			<div class="card-body" v-if="profile.photos.length === 0 && !loading && !errormsg">
+			<div class="card-body d-flex flex-column align-items-center" v-if="profile.photos.length === 0 && !loading && !errormsg">
 				<h4>
 					There's nothing here
 					<svg class="feather">
