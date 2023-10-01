@@ -76,7 +76,7 @@ export default {
 
 <template>
 	<!-- Post card -->
-	<div class="card mb-5" style="width: 40rem">
+	<div class="card mb-5" style="width: 60%">
 
 		<!-- Image div -->
 
@@ -91,8 +91,8 @@ export default {
 				<!-- Username and date -->
 				<div class="col-8">
 					<div class="card-body">
-						<h5 @click="userProfile" class="card-title d-inline-block" style="cursor: pointer">
-							<RouterLink :to="'/profile/' + this.photo.author.identifier" CLASS="link-dark">
+						<h5 class="card-title d-inline-block" style="cursor: pointer">
+							<RouterLink :to="'/profile/' + this.photo.author.identifier" class="link-dark">
 								{{ this.photo.author.name }}
 							</RouterLink>
 						</h5>

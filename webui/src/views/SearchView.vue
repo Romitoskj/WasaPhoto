@@ -49,7 +49,7 @@ export default {
 <template>
 	<div
 		class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-		<h1 class="h2">Search user</h1>
+		<h1>Search user</h1>
 	</div>
 	<div class="container d-flex flex-column min-vh-100 align-items-center my-5 gap-3">
 		<h4 class="border rounded">
