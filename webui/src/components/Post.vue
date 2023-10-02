@@ -110,14 +110,14 @@ export default {
 						{{ this.photo.author.name }}
 					</RouterLink>
 				</h5>
-				<small class="text-muted"> - {{ displayDateAndTime(new Date(Date.parse(this.photo.created_at))) }}</small>
+				<small class="text-muted">&nbsp;- {{ displayDateAndTime(new Date(Date.parse(this.photo.created_at))) }}</small>
 			</div>
 
 			<!-- Comment and like buttons -->
 			<div class="card-body d-flex justify-content-end">
 
 				<!-- Delete button -->
-				<div class="d-flex align-items-center gap-1" v-if="this.$session.id == photo.author.identifier">
+				<div class="d-flex align-items-center gap-1" v-if="this.$session.id === photo.author.identifier">
 					<button @click="deletePhoto(this.photo)" type="button" class="btn btn-link link-danger align-items-center">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#trash-2"/>
