@@ -117,7 +117,7 @@ export default {
 			<div class="card-body d-flex justify-content-end">
 
 				<!-- Delete button -->
-				<div class="d-flex align-items-center gap-1" v-if="this.$session.id === photo.author.identifier">
+				<div class="d-flex align-items-center gap-1" v-if="this.$session.id == photo.author.identifier">
 					<button @click="deletePhoto(this.photo)" type="button" class="btn btn-link link-danger align-items-center">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#trash-2"/>
