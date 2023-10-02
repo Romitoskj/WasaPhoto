@@ -96,7 +96,7 @@ export default {
 			</div>
 
 			<div class="card-body d-flex flex-column align-items-center">
-				<Post :photo="photo" v-for="photo in profile.photos"></Post>
+				<Post :photo="photo" v-for="photo in profile.photos" :key="photo.identifier"></Post>
 			</div>
 		</div>
 

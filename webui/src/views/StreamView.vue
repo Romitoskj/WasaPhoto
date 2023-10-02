@@ -72,7 +72,7 @@ export default {
 				<h6>You need to follow someone to see posts in your stream</h6>
 			</div>
 
-			<Post :photo="photo" v-for="photo in stream"></Post>
+			<Post :photo="photo" v-for="photo in stream" :key="photo.identifier"></Post>
 		</div>
 	</div>
 
