@@ -1,8 +1,9 @@
 <script>
 import Post from "../components/Post.vue";
+import UsersModal from "../components/UsersModal.vue";
 
 export default {
-	components: {Post},
+	components: {UsersModal, Post},
 	data: function() {
 		return {
 			errormsg: null,
@@ -126,7 +127,7 @@ export default {
 		<div class="card" style="width: 100%" v-if="profile">
 			<div class="card-header d-flex justify-content-between">
 
-				<div class="card-body d-flex align-items-center gap-1">
+				<div class="card-body d-flex align-items-center">
 					<h2 class="card-title d-inline-block">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#user"/>
@@ -137,13 +138,12 @@ export default {
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#edit-3"/>
 						</svg>
-						Change username
 					</button>
 				</div>
 
 				<div class="card-body d-flex align-items-center justify-content-end gap-1">
-					<button type="button" class="btn btn-link d-flex align-items-end link-dark">Followers: {{ profile.followers_n }}</button>
-					<button type="button" class="btn btn-link d-flex align-items-end link-dark">Following: {{ profile.following_n }}</button>
+					<button type="button" class="btn btn-link d-flex align-items-end link-dark" data-bs-toggle="modal" data-bs-target="#Followers">Followers: {{ profile.followers_n }}</button>
+					<button type="button" class="btn btn-link d-flex align-items-end link-dark" data-bs-toggle="modal" data-bs-target="#Following">Following: {{ profile.following_n }}</button>
 					<button  type="button" class="btn btn-link d-flex align-items-end link-dark text-decoration-none" style="pointer-events: none">Photos: {{profile.photos_n}}</button>
 				</div>
 
@@ -167,5 +167,10 @@ export default {
 			</div>
 		</div>
 
+	</div>
+
+	<div v-if="profile">
+		<UsersModal header="Followers" :url="`/users/${this.user_id}/followers/`"></UsersModal>
+		<UsersModal header="Following" :url="`/users/${this.user_id}/following/`"></UsersModal>
 	</div>
 </template>
