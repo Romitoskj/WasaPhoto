@@ -1,10 +1,6 @@
 <script>
-import {RouterLink} from "vue-router";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
-import ErrorMsg from "../components/ErrorMsg.vue";
 
 export default {
-	components: {ErrorMsg, LoadingSpinner, RouterLink},
 	data: function() {
 		return {
 			loading: false,

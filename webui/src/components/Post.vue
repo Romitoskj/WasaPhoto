@@ -1,9 +1,7 @@
 <script>
-import ErrorMsg from "./ErrorMsg.vue";
 import displayDateAndTime from "../services/date";
 
 export default {
-	components: {ErrorMsg},
 	props: {
 		photo: {type: Object}
 	},

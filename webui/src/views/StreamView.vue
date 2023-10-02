@@ -1,5 +1,4 @@
 <script>
-import {RouterLink} from "vue-router";
 import Post from "../components/Post.vue";
 
 export default {

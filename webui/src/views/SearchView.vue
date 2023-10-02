@@ -1,8 +1,6 @@
 <script>
-import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 export default {
-	components: {LoadingSpinner},
 	data() {
 		return {
 			users: [],

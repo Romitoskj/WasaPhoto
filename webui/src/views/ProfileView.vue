@@ -1,9 +1,8 @@
 <script>
 import Post from "../components/Post.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 export default {
-	components: {LoadingSpinner, Post},
+	components: {Post},
 	data: function() {
 		return {
 			errormsg: null,
