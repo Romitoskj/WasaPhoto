@@ -16,7 +16,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 
-			this.user_id = this.$route.params.id
+			this.user_id = parseInt(this.$route.params.id)
 
 			try {
 				let response = await this.$axios.get("/users/" + this.user_id);
@@ -36,6 +36,7 @@ export default {
 			try {
 				let response = await this.$axios.put(`/users/${this.user_id}/followers/${this.$session.id}`)
 				this.profile.followed = true
+				this.profile.followers_n ++
 			} catch (e) {
 				if (e.response.data !== undefined) {
 					this.errormsg = e.response.data.message
@@ -50,6 +51,37 @@ export default {
 			try {
 				let response = await this.$axios.delete(`/users/${this.user_id}/followers/${this.$session.id}`)
 				this.profile.followed = false
+				this.profile.followers_n --
+			} catch (e) {
+				if (e.response.data !== undefined) {
+					this.errormsg = e.response.data.message
+				} else {
+					this.errormsg = e.toString()
+				}
+			}
+		},
+		async ban() {
+			this.errormsg = null;
+
+			try {
+				let response = await this.$axios.put(`/users/${this.$session.id}/banned/${this.user_id}`)
+				this.profile.banned = true
+				this.profile.followed = false
+				this.profile.followers_n --
+			} catch (e) {
+				if (e.response.data !== undefined) {
+					this.errormsg = e.response.data.message
+				} else {
+					this.errormsg = e.toString()
+				}
+			}
+		},
+		async unban() {
+			this.errormsg = null;
+
+			try {
+				let response = await this.$axios.delete(`/users/${this.$session.id}/banned/${this.user_id}`)
+				this.profile.banned = false
 			} catch (e) {
 				if (e.response.data !== undefined) {
 					this.errormsg = e.response.data.message
@@ -101,7 +133,7 @@ export default {
 						</svg>
 						{{ profile.name }}
 					</h2>
-					<button v-if="user_id == this.$session.id" type="button" class="btn btn-link link-warning d-flex align-items-end" @click="changeUsername">
+					<button v-if="user_id === this.$session.id" type="button" class="btn btn-link link-warning d-flex align-items-end" @click="changeUsername">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#edit-3"/>
 						</svg>
@@ -115,11 +147,11 @@ export default {
 					<button  type="button" class="btn btn-link d-flex align-items-end link-dark text-decoration-none" style="pointer-events: none">Photos: {{profile.photos_n}}</button>
 				</div>
 
-				<div class="card-body d-flex align-items-center justify-content-end gap-1" v-if="user_id != this.$session.id">
+				<div class="card-body d-flex align-items-center justify-content-end gap-1" v-if="user_id !== this.$session.id">
 					<button v-if="profile.followed" @click="unfollow" type="button" class="btn btn-primary d-flex align-items-end">Unfollow</button>
-					<button v-else @click="follow" type="button" class="btn btn-outline-primary d-flex align-items-end">Follow</button>
-					<button v-if="profile.banned" type="button" class="btn btn-danger d-flex align-items-end">Unban</button>
-					<button v-else type="button" class="btn btn-outline-danger d-flex align-items-end">Ban</button>
+					<button v-else-if="!profile.banned" @click="follow" type="button" class="btn btn-outline-primary d-flex align-items-end">Follow</button>
+					<button v-if="profile.banned" @click="unban" type="button" class="btn btn-danger d-flex align-items-end">Unban</button>
+					<button v-else @click="ban" type="button" class="btn btn-outline-danger d-flex align-items-end">Ban</button>
 				</div>
 			</div>
 
