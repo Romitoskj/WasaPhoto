@@ -12,6 +12,7 @@ export default {
 			profile: null,
 			changing: false,
 			newName: null,
+			users: [],
 		}
 	},
 	methods: {
@@ -115,6 +116,20 @@ export default {
 				}
 			}
 		},
+		async getUsers(url) {
+			this.errormsg = null;
+
+			try {
+				let response = await this.$axios.get(url);
+				this.users = response.data;
+			} catch (e) {
+				if (e.response.data !== undefined) {
+					this.errormsg = e.response.data.message
+				} else {
+					this.errormsg = e.toString()
+				}
+			}
+		},
 	},
 	mounted() {
 		if (this.$session.id === -1) {
@@ -184,8 +199,23 @@ export default {
 
 				<!-- Followers, following and photo count -->
 				<div class="card-body d-flex align-items-center justify-content-end gap-1">
-					<button type="button" class="btn btn-link d-flex align-items-end link-dark" data-bs-toggle="modal" data-bs-target="#Followers">Followers: {{ profile.followers_n }}</button>
-					<button type="button" class="btn btn-link d-flex align-items-end link-dark" data-bs-toggle="modal" data-bs-target="#Following">Following: {{ profile.following_n }}</button>
+					<button type="button"
+							class="btn btn-link d-flex align-items-end link-dark"
+							@click="getUsers(`/users/${this.user_id}/followers/`)"
+							data-bs-toggle="modal"
+							data-bs-target="#Followers"
+					>
+						Followers: {{ profile.followers_n }}
+					</button>
+					<button
+						type="button"
+						class="btn btn-link d-flex align-items-end link-dark"
+						@click="getUsers(`/users/${this.user_id}/following/`)"
+						data-bs-toggle="modal"
+						data-bs-target="#Following"
+					>
+						Following: {{ profile.following_n }}
+					</button>
 					<button  type="button" class="btn btn-link d-flex align-items-end link-dark text-decoration-none" style="pointer-events: none">Photos: {{profile.photos_n}}</button>
 				</div>
 
@@ -212,8 +242,8 @@ export default {
 
 	</div>
 
-	<div v-if="profile">  <!-- TODO fix request on show -->
-		<UsersModal header="Followers" :url="`/users/${this.user_id}/followers/`"></UsersModal>
-		<UsersModal header="Following" :url="`/users/${this.user_id}/following/`"></UsersModal>
+	<div v-if="profile">
+		<UsersModal header="Followers" :users="users"></UsersModal>
+		<UsersModal header="Following" :users="users"></UsersModal>
 	</div>
 </template>
