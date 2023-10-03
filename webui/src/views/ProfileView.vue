@@ -10,6 +10,8 @@ export default {
 			loading: false,
 			user_id: null,
 			profile: null,
+			changing: false,
+			newName: null,
 		}
 	},
 	methods: {
@@ -67,8 +69,10 @@ export default {
 			try {
 				let response = await this.$axios.put(`/users/${this.$session.id}/banned/${this.user_id}`)
 				this.profile.banned = true
-				this.profile.followed = false
-				this.profile.followers_n --
+				if (this.profile.followed) {
+					this.profile.followed = false
+					this.profile.followers_n --
+				}
 			} catch (e) {
 				if (e.response.data !== undefined) {
 					this.errormsg = e.response.data.message
@@ -91,9 +95,26 @@ export default {
 				}
 			}
 		},
-		changeUsername() {
-			console.log(this.user_id, this.$session.id)
-		}
+		toggleChangeUsername() {
+			this.newName = null
+			this.changing = !this.changing
+		},
+		async changeUsername() {
+			this.errormsg = null;
+
+			try {
+				let response = await this.$axios.put(`/users/${this.$session.id}/username`, {name: this.newName})
+				this.profile.name = this.newName
+				this.$session.username = this.newName
+				this.toggleChangeUsername()
+			} catch (e) {
+				if (e.response.data !== undefined) {
+					this.errormsg = e.response.data.message
+				} else {
+					this.errormsg = e.toString()
+				}
+			}
+		},
 	},
 	mounted() {
 		if (this.$session.id === -1) {
@@ -127,26 +148,48 @@ export default {
 		<div class="card" style="width: 100%" v-if="profile">
 			<div class="card-header d-flex justify-content-between">
 
-				<div class="card-body d-flex align-items-center">
+				<!-- Change username form -->
+				<div v-if="changing" class="card-body d-flex align-items-center">
+					<form @submit.prevent="changeUsername" class="d-flex align-items-center gap-3">
+						<input
+							type="text"
+							v-model="newName"
+							class="form-control"
+							placeholder="New username"
+							required
+							minlength="3"
+							maxlength="16"
+						>
+						<div class="d-flex align-items-center justify-content-end gap-1">
+							<button type="submit" class="btn btn-outline-primary d-flex align-items-end">Submit</button>
+							<button type="button" class="btn btn-outline-secondary d-flex align-items-end" @click="toggleChangeUsername">Cancel</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Username -->
+				<div v-else class="card-body d-flex align-items-center">
 					<h2 class="card-title d-inline-block">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#user"/>
 						</svg>
 						{{ profile.name }}
 					</h2>
-					<button v-if="user_id === this.$session.id" type="button" class="btn btn-link link-warning d-flex align-items-end" @click="changeUsername">
+					<button v-if="user_id === this.$session.id" type="button" class="btn btn-link link-warning d-flex align-items-center" @click="toggleChangeUsername">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#edit-3"/>
 						</svg>
 					</button>
 				</div>
 
+				<!-- Followers, following and photo count -->
 				<div class="card-body d-flex align-items-center justify-content-end gap-1">
 					<button type="button" class="btn btn-link d-flex align-items-end link-dark" data-bs-toggle="modal" data-bs-target="#Followers">Followers: {{ profile.followers_n }}</button>
 					<button type="button" class="btn btn-link d-flex align-items-end link-dark" data-bs-toggle="modal" data-bs-target="#Following">Following: {{ profile.following_n }}</button>
 					<button  type="button" class="btn btn-link d-flex align-items-end link-dark text-decoration-none" style="pointer-events: none">Photos: {{profile.photos_n}}</button>
 				</div>
 
+				<!-- Follow/Unfollow and Ban/Unban buttons -->
 				<div class="card-body d-flex align-items-center justify-content-end gap-1" v-if="user_id !== this.$session.id">
 					<button v-if="profile.followed" @click="unfollow" type="button" class="btn btn-primary d-flex align-items-end">Unfollow</button>
 					<button v-else-if="!profile.banned" @click="follow" type="button" class="btn btn-outline-primary d-flex align-items-end">Follow</button>
@@ -169,7 +212,7 @@ export default {
 
 	</div>
 
-	<div v-if="profile">
+	<div v-if="profile">  <!-- TODO fix request on show -->
 		<UsersModal header="Followers" :url="`/users/${this.user_id}/followers/`"></UsersModal>
 		<UsersModal header="Following" :url="`/users/${this.user_id}/following/`"></UsersModal>
 	</div>
