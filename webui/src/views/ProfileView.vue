@@ -243,7 +243,7 @@ export default {
 	</div>
 
 	<div v-if="profile">
-		<UsersModal header="Followers" :users="users"></UsersModal>
-		<UsersModal header="Following" :users="users"></UsersModal>
+		<UsersModal id="Followers" header="Followers" :users="users"></UsersModal>
+		<UsersModal id="Following" header="Following" :users="users"></UsersModal>
 	</div>
 </template>

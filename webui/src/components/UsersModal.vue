@@ -1,6 +1,6 @@
 <script>
 export default {
-	props: ['header', 'users'],
+	props: ['id', 'header', 'users'],
 	data: function() {
 		return {
 
@@ -11,7 +11,7 @@ export default {
 
 <template>
 	<!-- Upload modal -->
-	<div class="modal fade" :id="this.header" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal fade" :id="this.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 			<div class="modal-content" style="height: 40%">
 				<div class="modal-header">
