@@ -32,7 +32,7 @@ func (rt *_router) getLikers(w http.ResponseWriter, r *http.Request, ps httprout
 		rt.userIsPhotoAuthor(w, user, photo) {
 
 		// get list of likers from db
-		users, err := rt.db.GetLikers(user, auth)
+		users, err := rt.db.GetLikers(photo, auth)
 		if err != nil {
 			utils.InternalServerError(w, err)
 			return
