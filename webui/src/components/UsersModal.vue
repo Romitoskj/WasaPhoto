@@ -38,8 +38,8 @@ export default {
 <template>
 	<!-- Upload modal -->
 	<div class="modal fade" :id="this.header" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+			<div class="modal-content" style="height: 40%">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLongTitle">{{this.header}}</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close"></button>
@@ -48,17 +48,16 @@ export default {
 					<LoadingSpinner :loading="loading"></LoadingSpinner>
 					<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 					<div v-else class="d-flex flex-column gap-2">
-						<router-link
+						<div
 							v-for="user in this.users"
 							:key="user.identifier"
-							:to="'/profile/' + user.identifier"
-							class="text-decoration-none text-dark border px-2 py-1 rounded"
+							class="text-decoration-none text-dark "
 						>
 							<svg class="feather">
 								<use href="/feather-sprite-v4.29.0.svg#user"/>
 							</svg>
 							{{ user.name }}
-						</router-link>
+						</div>
 						<h6 v-if="users.length === 0 && !loading && !errormsg">
 							There's nothing here
 							<svg class="feather">
