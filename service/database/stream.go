@@ -9,7 +9,7 @@ func (db *appdbimpl) GetStream(user int64) ([]types.Photo, error) {
 
 	// Get all the users photos
 	rows, err := db.c.Query(
-		`SELECT p.id, p.created_at, p.author, u.username, COUNT(l.liker) likes_n, COUNT(c.id) comments_n
+		`SELECT p.id, p.created_at, p.author, u.username, COUNT(DISTINCT l.liker) likes_n, COUNT(DISTINCT c.id) comments_n
 		FROM photo p
 			LEFT JOIN like l ON p.id = l.photo
 			LEFT JOIN comment c on p.id = c.photo
