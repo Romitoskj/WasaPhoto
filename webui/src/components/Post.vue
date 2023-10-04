@@ -1,9 +1,10 @@
 <script>
 import displayDateAndTime from "../services/date";
 import UsersModal from "./UsersModal.vue";
+import CommentsModal from "./CommentsModal.vue";
 
 export default {
-	components: {UsersModal},
+	components: {CommentsModal, UsersModal},
 	props: {
 		photo: {type: Object}
 	},
@@ -15,7 +16,9 @@ export default {
 			loading: false,
 			photoError: null,
 			errormsg: null,
+
 			likes: [],
+			comments: [],
 		}
 	},
 	methods: {
@@ -96,8 +99,23 @@ export default {
 					this.errormsg = e.toString()
 				}
 			}
+		},
+		async getComments() {
+			this.errormsg = null;
+
+			try {
+				let response = await this.$axios.get(`/users/${this.photo.author.identifier}/photos/${this.photo.identifier}/comments/`);
+				this.comments = response.data;
+			} catch (e) {
+				if (e.response.data !== undefined) {
+					this.errormsg = e.response.data.message
+				} else {
+					this.errormsg = e.toString()
+				}
+			}
 		}
 	},
+
 	mounted() {
 		this.getPhoto(this.$props.photo)
 	}
@@ -106,19 +124,20 @@ export default {
 
 <template>
 	<!-- Post card -->
-	<div class="card mb-5" style="width: 60%">
+	<div v-if="deleted" class="alert alert-success alert-dismissible fade show" role="alert" style="width: 60%">
+		Photo deleted successfully!
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+	<div v-else class="card mb-5" style="width: 60%">
 
 		<!-- Image div -->
 
 		<LoadingSpinner :loading="loading" />
 
 		<ErrorMsg v-if="photoError" :msg="photoError"></ErrorMsg>
-		<div v-else-if="deleted" class="card-body">
-			<div class="alert alert-success">Photo deleted successfully!</div>
-		</div>
-		<img v-else :src="img" class="card-img-top" :alt="photoError">
+		<img :src="img" class="card-img-top" :alt="photoError">
 
-		<div v-if="!deleted" class="d-flex justify-content-between">
+		<div class="d-flex justify-content-between">
 
 			<!-- Username and date -->
 			<div class="card-body d-flex align-items-center">
@@ -131,7 +150,7 @@ export default {
 			</div>
 
 			<!-- Comment and like buttons -->
-			<div class="card-body d-flex justify-content-end">
+			<div class="card-body d-flex justify-content-end gap-1">
 
 				<!-- Delete button -->
 				<div class="d-flex align-items-center gap-1" v-if="this.$session.id === photo.author.identifier">
@@ -144,11 +163,13 @@ export default {
 				</div>
 
 				<!-- Comments icon an count -->
-				<div class="d-flex align-items-center gap-1">
-					<svg @click="showCommentForm" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-right" viewBox="0 0 16 16" style="cursor: pointer">
-						<path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
-					</svg>
-					<button @click="showComments" type="button" class="btn btn-link d-flex align-items-center text-muted">{{ this.photo.comments_n }}</button>
+				<div class="d-flex align-items-center">
+					<button @click="getComments" type="button" class="btn btn-link d-flex align-items-center gap-3 text-dark" data-bs-toggle="modal" :data-bs-target="`#Comments${this.photo.identifier}`">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-right" viewBox="0 0 16 16">
+							<path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
+						</svg>
+						<span class="text-muted">{{ this.photo.comments_n }}</span>
+					</button>
 				</div>
 
 				<!-- Likes icon and count -->
@@ -173,4 +194,5 @@ export default {
 		</div>
 	</div>
 	<UsersModal :id="`Likes${this.photo.identifier}`" header="Likes" :users="likes"></UsersModal>
+	<CommentsModal :id="`Comments${this.photo.identifier}`" :comments="comments" :photo_author="this.photo.author.identifier" :photo="this.photo.identifier"></CommentsModal>
 </template>
