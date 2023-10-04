@@ -62,7 +62,7 @@ export default {
 					>
 				</h4>
 			</div>
-			<div class="card-body d-flex flex-column gap-2">
+			<div v-if="query.length > 0 && !loading" class="card-body d-flex flex-column gap-2">
 				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 				<h5 v-if="users.length === 0 && query.length > 0 && !loading">No user found</h5>
 				<div class="d-flex flex-column gap-2" v-else-if="query.length > 0">
