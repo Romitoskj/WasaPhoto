@@ -152,12 +152,8 @@ export default {
 	<!-- Main content -->
 	<div class="container d-flex flex-column min-vh-100 align-items-center my-5 gap-3">
 
-		<div class="card" style="width: 100%" v-if="errormsg || loading">
-			<div class="card-body">
-				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-				<LoadingSpinner :loading="loading"></LoadingSpinner>
-			</div>
-		</div>
+		<ErrorMsg style="width: 100%" v-if="errormsg" :msg="errormsg"></ErrorMsg>
+		<LoadingSpinner :loading="loading"></LoadingSpinner>
 
 		<!--- User info -->
 		<div class="card" style="width: 100%" v-if="profile">

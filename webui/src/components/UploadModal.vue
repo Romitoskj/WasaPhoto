@@ -51,7 +51,10 @@ export default {
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close"></button>
 					</div>
 					<div class="modal-body">
-						<div class="alert alert-success" v-if="uploadSuccessful">Photo successfully uploaded!</div>
+						<div class="alert alert-success alert-dismissible fade show" role="alert" v-if="uploadSuccessful">
+							Photo successfully uploaded!
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
 						<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 						<div class="d-flex flex-column gap-3 p-3">
 							<input type="file" ref="photo" accept="image/jpeg">
