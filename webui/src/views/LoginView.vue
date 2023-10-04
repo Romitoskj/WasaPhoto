@@ -47,7 +47,7 @@ export default {
 						<h6><label for="username">Username:</label></h6>
 						<input
 							type="text"
-							v-model="this.name"
+							v-model="name"
 							class="form-control"
 							placeholder="Your username"
 							required

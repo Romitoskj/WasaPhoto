@@ -33,7 +33,7 @@ export default {
 
 	<div class="container-fluid">
 
-		<div class="row" v-if="this.$route.name === 'login'">
+		<div class="row" v-if="$route.name === 'login'">
 			<main class="col-md-12 ms-sm-auto col-lg-12 px-md-4">
 				<RouterView/>
 			</main>
@@ -69,7 +69,7 @@ export default {
 					</h6>
 					<ul class="nav flex-column">
 						<li class="nav-item">
-							<RouterLink :to="'/profile/' + this.$session.id" class="nav-link">
+							<RouterLink :to="'/profile/' + $session.id" class="nav-link">
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#user"/>
 								</svg>
@@ -89,7 +89,7 @@ export default {
 			</nav>
 
 			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-				<RouterView :key="this.$route.fullPath"/>
+				<RouterView :key="$route.fullPath"/>
 			</main>
 		</div>
 	</div>

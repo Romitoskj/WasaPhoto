@@ -41,7 +41,7 @@ export default {
 
 <template>
 	<!-- Comments modal -->
-	<div class="modal fade" :id="this.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 			<div class="modal-content" style="height: 40%">
 
@@ -53,11 +53,11 @@ export default {
 				<div class="modal-body">
 					<div class="d-flex flex-column gap-2">
 						<Comment
-							v-for="comment in this.comments"
+							v-for="comment in comments"
 							:key="comment.identifier"
 							:comment="comment"
-							:photo="this.photo"
-							:photo_author="this.photo_author"
+							:photo="photo"
+							:photo_author="photo_author"
 						></Comment>
 
 						<h6 v-if="comments.length === 0">

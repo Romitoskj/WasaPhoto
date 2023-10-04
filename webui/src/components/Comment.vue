@@ -39,16 +39,16 @@ export default {
 				<svg class="feather">
 					<use href="/feather-sprite-v4.29.0.svg#user"/>
 				</svg>
-				{{ this.comment.author.name }}
-				<small class="text-muted">&nbsp;- {{ displayDateAndTime(new Date(Date.parse(this.comment.created_at))) }}</small>
+				{{ comment.author.name }}
+				<small class="text-muted">&nbsp;- {{ displayDateAndTime(new Date(Date.parse(comment.created_at))) }}</small>
 			</div>
 			<h6>
-				{{ this.comment.content }}
+				{{ comment.content }}
 			</h6>
 		</div>
 
-		<div class="d-flex align-items-center" v-if="this.comment.author.identifier === this.$session.id">
-			<button @click="deleteComment(this.comment.identifier)" type="button" class="btn btn-link link-danger align-items-center">
+		<div class="d-flex align-items-center" v-if="comment.author.identifier === $session.id">
+			<button @click="deleteComment(comment.identifier)" type="button" class="btn btn-link link-danger align-items-center">
 				<svg class="feather">
 					<use href="/feather-sprite-v4.29.0.svg#trash-2"/>
 				</svg>

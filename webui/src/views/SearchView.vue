@@ -56,7 +56,7 @@ export default {
 					<input
 						type="text"
 						class="d-flex px-2 py-2"
-						v-model="this.query"
+						v-model="query"
 						style="outline: none; border: none; background: none"
 						placeholder="Type an user name"
 					>

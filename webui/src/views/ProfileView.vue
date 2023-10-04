@@ -186,7 +186,7 @@ export default {
 						</svg>
 						{{ profile.name }}
 					</h2>
-					<button v-if="user_id === this.$session.id" type="button" class="btn btn-link link-warning d-flex align-items-center" @click="toggleChangeUsername">
+					<button v-if="user_id === $session.id" type="button" class="btn btn-link link-warning d-flex align-items-center" @click="toggleChangeUsername">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#edit-3"/>
 						</svg>
@@ -197,7 +197,7 @@ export default {
 				<div class="card-body d-flex align-items-center justify-content-end gap-1">
 					<button type="button"
 							class="btn btn-link d-flex align-items-end link-dark"
-							@click="getUsers(`/users/${this.user_id}/followers/`)"
+							@click="getUsers(`/users/${user_id}/followers/`)"
 							data-bs-toggle="modal"
 							data-bs-target="#Followers"
 					>
@@ -206,7 +206,7 @@ export default {
 					<button
 						type="button"
 						class="btn btn-link d-flex align-items-end link-dark"
-						@click="getUsers(`/users/${this.user_id}/following/`)"
+						@click="getUsers(`/users/${user_id}/following/`)"
 						data-bs-toggle="modal"
 						data-bs-target="#Following"
 					>
@@ -216,7 +216,7 @@ export default {
 				</div>
 
 				<!-- Follow/Unfollow and Ban/Unban buttons -->
-				<div class="card-body d-flex align-items-center justify-content-end gap-1" v-if="user_id !== this.$session.id">
+				<div class="card-body d-flex align-items-center justify-content-end gap-1" v-if="user_id !== $session.id">
 					<button v-if="profile.followed" @click="unfollow" type="button" class="btn btn-primary d-flex align-items-end">Unfollow</button>
 					<button v-else-if="!profile.banned" @click="follow" type="button" class="btn btn-outline-primary d-flex align-items-end">Follow</button>
 					<button v-if="profile.banned" @click="unban" type="button" class="btn btn-danger d-flex align-items-end">Unban</button>
