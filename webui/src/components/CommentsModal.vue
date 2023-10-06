@@ -1,32 +1,31 @@
 <script>
 import Comment from "./Comment.vue";
-import comment from "./Comment.vue";
 
 export default {
-	computed: {
-		comment() {
-			return comment
-		}
-	},
+	emits: ['commentsCount'],
 	components: {Comment},
 	props: ['id', 'comments', 'photo_author', 'photo'],
 	data: function() {
 		return {
 			errormsg: null,
 			newComment: null,
+
+			added: [],
 		}
 	},
 	methods: {
 		clearComment() {
 			this.newComment = null
 			this.errormsg = null
+			this.added = []
 		},
 		async addComment() {
 			try {
 				let response = await this.$axios.post(`/users/${this.photo_author}/photos/${this.photo}/comments/`, {'content': this.newComment})
 				this.errormsg = null
-				this.comments.push(response.data)
+				this.added.push(response.data)
 				this.newComment = null
+				this.$emit("commentsCount", 1)
 			} catch (e) {
 				if (e.response.data !== undefined) {
 					this.errormsg = e.response.data.message
@@ -59,8 +58,15 @@ export default {
 							:photo="photo"
 							:photo_author="photo_author"
 						></Comment>
+						<Comment
+							v-for="comment in added"
+							:key="comment.identifier"
+							:comment="comment"
+							:photo="photo"
+							:photo_author="photo_author"
+						></Comment>
 
-						<h6 v-if="comments.length === 0">
+						<h6 v-if="comments.length === 0 && added.length === 0">
 							There's nothing here
 							<svg class="feather">
 								<use href="/feather-sprite-v4.29.0.svg#frown"/>
