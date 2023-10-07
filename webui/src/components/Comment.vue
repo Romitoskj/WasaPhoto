@@ -2,6 +2,7 @@
 import displayDateAndTime from "../services/date";
 
 export default {
+	emits: ['comment-deleted'],
 	props: ['comment', 'photo_author', 'photo'],
 	data: function() {
 		return {
@@ -16,6 +17,7 @@ export default {
 			try {
 				await this.$axios.delete(`/users/${this.photo_author}/photos/${this.photo}/comments/${id}`)
 				this.deleted = true
+				this.$emit("comment-deleted")
 			} catch (e) {
 				if (e.response.data !== undefined) {
 					this.errormsg = e.response.data.message

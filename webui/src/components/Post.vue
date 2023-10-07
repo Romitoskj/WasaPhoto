@@ -113,6 +113,9 @@ export default {
 					this.errormsg = e.toString()
 				}
 			}
+		},
+		commentsCount(value) {
+			this.photo.comments_n += value
 		}
 	},
 
@@ -168,7 +171,7 @@ export default {
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-right" viewBox="0 0 16 16">
 							<path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
 						</svg>
-						<span class="text-muted">{{ photo.comments_n }}</span> <!-- TODO increment or decrement when adding or deleting comment -->
+						<span class="text-muted">{{ photo.comments_n }}</span>
 					</button>
 				</div>
 
@@ -194,5 +197,5 @@ export default {
 		</div>
 	</div>
 	<UsersModal :id="`Likes${photo.identifier}`" header="Likes" :users="likes"></UsersModal>
-	<CommentsModal :id="`Comments${photo.identifier}`" :comments="comments" :photo_author="photo.author.identifier" :photo="photo.identifier"></CommentsModal>
+	<CommentsModal :id="`Comments${photo.identifier}`" :comments="comments" :photo_author="photo.author.identifier" :photo="photo.identifier" @comments-count="commentsCount"></CommentsModal>
 </template>

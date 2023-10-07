@@ -2,7 +2,7 @@
 import Comment from "./Comment.vue";
 
 export default {
-	emits: ['commentsCount'],
+	emits: ['comments-count'],
 	components: {Comment},
 	props: ['id', 'comments', 'photo_author', 'photo'],
 	data: function() {
@@ -25,7 +25,7 @@ export default {
 				this.errormsg = null
 				this.added.push(response.data)
 				this.newComment = null
-				this.$emit("commentsCount", 1)
+				this.$emit("comments-count", 1)
 			} catch (e) {
 				if (e.response.data !== undefined) {
 					this.errormsg = e.response.data.message
@@ -57,6 +57,7 @@ export default {
 							:comment="comment"
 							:photo="photo"
 							:photo_author="photo_author"
+							@comment-deleted="$emit('comments-count', -1)"
 						></Comment>
 						<Comment
 							v-for="comment in added"
@@ -64,6 +65,7 @@ export default {
 							:comment="comment"
 							:photo="photo"
 							:photo_author="photo_author"
+							@comment-deleted="$emit('comments-count', -1)"
 						></Comment>
 
 						<h6 v-if="comments.length === 0 && added.length === 0">
